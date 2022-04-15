@@ -5,5 +5,7 @@ const config = {
     image2: "images/yip2.png",
     twitchUsername: "yip_bot",
     twitchOAuthPassword: "", // Official OAuth token generator: https://twitchapps.com/tmi/
-    twitchChannel: "kobold_wyx"
+    twitchChannel: "kobold_wyx",
+    yipOffsetLeft: 80,
+    yipOffsetTop: 0
 };

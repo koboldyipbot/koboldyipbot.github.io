@@ -50,7 +50,6 @@ function onMessageHandler (channel, context, msg, self) {
       doHelp(channel, context);
       return;
     }
-    console.log(minimumYipGapMilliseconds);
 
     if (msPerYip < config.minimumYipGapMilliseconds) {
       client.say(channel, "@" + user + ": The minimum gap between yips in milliseconds is " + config.minimumYipGapMilliseconds + "!");
@@ -79,3 +78,7 @@ function onMessageHandler (channel, context, msg, self) {
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
 }
+
+$.when( $.ready ).then(function() {
+    $(document).click(yip);
+});

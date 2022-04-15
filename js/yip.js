@@ -32,7 +32,11 @@ function yip(client, target, yipCount, msPerYip) {
     audio.play();
     var size = Math.floor(Math.random() * 18) + 6;
     var span = $('<span class="yip">yip</span>');
-    span.css({position: "absolute", "font-family": "Georgia", "font-size": size + "px"});
+    span.css({
+        "font-size": size + "px",
+        left: config.yipOffsetLeft,
+        top: config.yipOffsetTop
+    });
     $("#yip_box").append(span);
     last_anim = span;
 
@@ -51,7 +55,7 @@ function yip(client, target, yipCount, msPerYip) {
     for (var i = 1 ; i <= iters; i++) {
         var next_x_line = i * target_x / iters;
         var next_x_wiggle = wiggle_multiplier * width * dir;
-        var next_y_line = i * target_y / iters;
+        var next_y_line = i * target_y / iters + config.yipOffsetTop;
 
         var doneFunc = function(){};
         if (i === iters) {
@@ -62,8 +66,8 @@ function yip(client, target, yipCount, msPerYip) {
         }
         last_anim = last_anim.animate(
             {
-                left: Math.floor(next_x_line + next_x_wiggle),
-                top: Math.floor(next_y_line)
+                left: Math.floor(config.yipOffsetLeft + next_x_line + next_x_wiggle),
+                top: Math.floor(config.yipOffsetTop + next_y_line)
             },
             {
                 duration: animation_time,
@@ -89,11 +93,3 @@ function yip(client, target, yipCount, msPerYip) {
         setTimeout(yip, msPerYip, client, target, yipCount-1, msPerYip);
     }
 }
-
-$.when( $.ready ).then(function() {
-    $(document).click(yip);
-});
-
-
-
-
