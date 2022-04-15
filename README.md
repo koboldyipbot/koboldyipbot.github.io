@@ -1,7 +1,7 @@
 # yipbot
 A twitch bot for yipping kobolds.
 
-To use, simply load yip.html into your browser.
+To use, load yip.html into your browser, ie. by clicking and dragging the file in.
 
 Can be used to interactively yip without configuring the Twitch integration.
 
