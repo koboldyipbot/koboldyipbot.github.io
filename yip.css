@@ -1,0 +1,27 @@
+body {
+  overflow: hidden;
+}
+
+#canvas img {
+    position: fixed;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#yip_box {
+    position: absolute;
+    top: 65%;
+    left: 65%;
+    transform: translate(-50%, -50%);
+}
+
+.yip {
+    font-family: "Georgia";
+}
+
+/*#canvas {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}*/
