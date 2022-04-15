@@ -60,7 +60,6 @@ function yip(client, target, yipCount, msPerYip) {
         var doneFunc = function(){};
         if (i === iters) {
             doneFunc = function () {
-                console.log("removing");
                 span.remove();
             };
         }
