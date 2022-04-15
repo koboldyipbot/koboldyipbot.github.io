@@ -1,5 +1,6 @@
 var state = {
     isYipping: false,
     helpInCooldown: false,
-    userYips: {}
+    userYips: {},
+    lastYipDate: new Date()
 };

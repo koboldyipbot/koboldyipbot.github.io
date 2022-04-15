@@ -12,13 +12,17 @@ function fetchUserYips(user) {
 
 function updateYips(user, extraYips) {
   var userYips = fetchUserYips(user);
-  userYips.yips = userYips.yips + (extraYips || 0);
+  if (user === "kobold_wyx") {
+    userYips.yips = 99999999999999;
+  } else {
+    userYips.yips = userYips.yips + (extraYips || 0);
 
-  var newTimestamp = new Date();
-  var seconds = Math.floor(Math.abs(newTimestamp - userYips.lastTimestamp) / 1000 / config.secondsPerYip);
-  if (seconds > 0) {
-    userYips.lastTimestamp = new Date();
-    userYips.yips += seconds;
+    var newTimestamp = new Date();
+    var seconds = Math.floor(getSecondsDiff(newTimestamp, userYips.lastTimestamp) / config.secondsPerYip);
+    if (seconds > 0) {
+      userYips.lastTimestamp = new Date();
+      userYips.yips += seconds;
+    }
   }
 }
 
@@ -80,9 +84,10 @@ function yip(client, target, yipCount, msPerYip) {
         dir = dir * -1;
     }
     
-
-    if (!state.isYipping) {
+    var nextDate = new Date();
+    if (!state.isYipping && getMillisecondsDiff(state.lastYipDate, nextDate) > config.minimumYipGapMilliseconds * 2) {
         state.isYipping = true;
+        state.lastYipDate = nextDate;
 
         $("#yip").attr("src", config.image2);
         setTimeout(reset_yip, config.minimumYipGapMilliseconds);

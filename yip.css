@@ -23,6 +23,11 @@ body {
 .yip {
     position: fixed;
     font-family: "Georgia";
+    color: white;
+}
+
+body {
+    background-color: green;
 }
 
 /*#canvas {

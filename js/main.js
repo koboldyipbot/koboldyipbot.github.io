@@ -4,9 +4,7 @@ const opts = {
     username: config.twitchUsername,
     password: config.twitchOAuthPassword
   },
-  channels: [
-    config.twitchChannel
-  ]
+  channels: config.twitchChannels
 };
 
 // Create a client with our options
@@ -56,13 +54,13 @@ function onMessageHandler (channel, context, msg, self) {
       return;
     }
 
+    var userYips = fetchUserYips(user);
     if (userYips.yips <= 0) {
       var user = context["display-name"];
       client.say(channel, "@" + user + ": You only have " + userYips.yips + " yips!");
       return;
     }
-
-    var userYips = fetchUserYips(user);
+    
     yip(client, channel, yips, msPerYip);
     updateYips(user, -yips);
   }
