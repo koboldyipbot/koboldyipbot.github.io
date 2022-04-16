@@ -10,5 +10,10 @@ const config = {
         "shakarhye"
     ],
     yipOffsetLeft: 80,
-    yipOffsetTop: 0
+    yipOffsetTop: 0,
+    mods: [
+        "KoboldUnderlord",
+        "kobold_wyx",
+        "yip_bot"
+    ]
 };

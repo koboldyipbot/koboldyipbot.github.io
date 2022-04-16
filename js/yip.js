@@ -12,7 +12,7 @@ function fetchUserYips(user) {
 
 function updateYips(user, extraYips) {
   var userYips = fetchUserYips(user);
-  if (user === "kobold_wyx") {
+  if (config.mods.includes(user)) {
     userYips.yips = 99999999999999;
   } else {
     userYips.yips = userYips.yips + (extraYips || 0);
@@ -33,6 +33,7 @@ function reset_yip() {
 
 function yip(client, target, yipCount, msPerYip) {
     var audio = new Audio('sounds/yip.mp3');
+    audio.loop = false;
     audio.play();
     var size = Math.floor(Math.random() * 18) + 6;
     var span = $('<span class="yip">yip</span>');
