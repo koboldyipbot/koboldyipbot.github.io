@@ -1,11 +1,11 @@
 var raffleKey = "raffle";
 var activeRaffle = true;
 
-function addRaffleEntry(day, user) {
+function raffleAddEntry(day, user) {
 	if (config.mods.includes(user)) {
 		return;
 	}
-	var entries = getRaffleEntries();
+	var entries = raffleGetEntries();
 	var dayEntries = entries[day] || {};
 	entries[day] = dayEntries;
 	if (!(user in dayEntries)) {
@@ -18,25 +18,25 @@ function addRaffleEntry(day, user) {
 	localStorage.setItem(raffleKey, JSON.stringify(entries));
 }
 
-function addRaffleEntryToday(user) {
+function raffleAddEntryToday(user) {
 	var date = new Date();
-	addRaffleEntry(date.toLocaleDateString("en-us"), user);
+	raffleAddEntry(date.toLocaleDateString("en-us"), user);
 }
 
-function getRaffleEntries() {
+function raffleGetEntries() {
 	return JSON.parse(localStorage.getItem(raffleKey)) || {};
 }
 
-function clearRaffleEntries() {
+function raffleClearEntries() {
 	localStorage.setItem(raffleKey, JSON.stringify({}));
 }
 
-function getEntryCount(user) {
-	return getRaffleEntries()[user] || 0;
+function raffleGetEntryCount(user) {
+	return raffleGetEntries()[user] || 0;
 }
 
-function doRaffle() {
-	var entries = getRaffleEntries();
+function raffleDo() {
+	var entries = raffleGetEntries();
 	var raffleEntries = [];
 	for (var day in entries) {
 		var dayEntries = entries[day];
@@ -51,10 +51,18 @@ function doRaffle() {
 }
 
 function raffleQueryCommand(client, channel, user) {
-	client.say(channel, "@" + user + ": You have " + getEntryCount(user) + " entries in the raffle!");
+	client.say(channel, "@" + user + ": You have " + raffleGetEntryCount(user) + " entries in the raffle!");
+}
+
+function raffleAdminQueryCommand(client, channel, user) {
+	client.say(channel, user + " has " + raffleGetEntryCount(user) + " entries!");
+}
+
+function raffleDebug(client, channel) {
+	client.say(channel, JSON.stringify(raffleGetEntries()));
 }
 
 function raffleDrawCommand(client, channel) {
-	var winner = doRaffle();
+	var winner = raffleDo();
 	client.say(channel, "The winner of the raffle is @" + winner + "! YIPYIPYIYPYIPYIYPYIPYIPYIP");
 }

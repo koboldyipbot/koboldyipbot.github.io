@@ -51,7 +51,7 @@ function onMessageHandler (channel, context, msg, self) {
   // console.log(msg);
   var user = context["display-name"];
   updateYips(user);
-  addRaffleEntryToday(user);
+  raffleAddEntryToday(user);
 
   if (!msg.startsWith('!')) { return; }
 
@@ -135,9 +135,14 @@ function onMessageHandler (channel, context, msg, self) {
       } else if (cmd === "add" && commandArr[2] && commandArr[3]) {
         var day = commandArr[2];
         var user = commandArr[3];
-        addRaffleEntry(day, user);
+        raffleAddEntry(day, user);
       } else if (cmd === "clear") {
-        clearRaffleEntries();
+        raffleClearEntries();
+      } else if (cmd === "checkEntries") {
+        var user = commandArr[2];
+        raffleAdminQueryCommand(client, channel, user);
+      } else if (cmd === "debug") {
+        raffleDebug(client, channel);
       }
     } else {
       raffleQueryCommand(client, channel, user);
