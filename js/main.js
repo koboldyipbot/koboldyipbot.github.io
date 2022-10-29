@@ -51,6 +51,7 @@ function onMessageHandler (channel, context, msg, self) {
   // console.log(msg);
   var user = context["display-name"];
   updateYips(user);
+  addRaffleEntryToday(user);
 
   if (!msg.startsWith('!')) { return; }
 
@@ -126,7 +127,21 @@ function onMessageHandler (channel, context, msg, self) {
       hello();
     }
   } else if (commandArr[0] === "!raffle") {
-    client.say(channel, "Congratulations! You've entered the raffle! Chatting during a stream gets you one entry (1 entry per stream). Full details will be posted on https://twitter.wyx.gay soon!");
+    var isMod = config.mods.includes(user);
+    var cmd = commandArr[1];
+    if (isMod) {
+      if (cmd === "draw") {
+        raffleDrawCommand(client, channel);
+      } else if (cmd === "add" && commandArr[2] && commandArr[3]) {
+        var day = commandArr[2];
+        var user = commandArr[3];
+        addRaffleEntry(day, user);
+      } else if (cmd === "clear") {
+        clearRaffleEntries();
+      }
+    } else {
+      raffleQueryCommand(client, channel, user);
+    }
   }
 }
 
