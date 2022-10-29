@@ -130,21 +130,34 @@ function onMessageHandler (channel, context, msg, self) {
     var isMod = config.mods.includes(user);
     var cmd = commandArr[1];
     if (isMod) {
-      if (cmd === "draw") {
-        raffleDrawCommand(client, channel);
-      } else if (cmd === "add" && commandArr[2] && commandArr[3]) {
-        var day = commandArr[2];
-        var user = commandArr[3];
-        raffleAddEntry(day, user);
-      } else if (cmd === "clear") {
-        raffleClearEntries();
-      } else if (cmd === "checkEntries") {
-        var user = commandArr[2];
-        raffleAdminQueryCommand(client, channel, user);
-      } else if (cmd === "debug") {
-        raffleDebug(client, channel);
+      // meta commands
+      if (cmd === "enable") {
+        raffleSetIsEnabled(true);
+      } else if (cmd === "disable") {
+        raffleSetIsEnabled(false);
+      } else if (cmd === "raffleOn") {
+        raffleSetAcceptEntries(true);
+      } else if (cmd === "raffleOff") {
+        raffleSetAcceptEntries(false);
       }
-    } else {
+      // commands
+      else if (raffleIsEnabled) {
+        if (cmd === "draw") {
+          raffleDrawCommand(client, channel);
+        } else if (cmd === "add" && commandArr[2] && commandArr[3]) {
+          var day = commandArr[2];
+          var user = commandArr[3];
+          raffleAddEntry(day, user);
+        } else if (cmd === "clear") {
+          raffleClearEntries();
+        } else if (cmd === "checkEntries") {
+          var user = commandArr[2];aaaaa
+          raffleAdminQueryCommand(client, channel, user);
+        } else if (cmd === "debug") {
+          raffleDebug(client, channel);
+        }
+      }
+    } else if (raffleIsEnabled) {
       raffleQueryCommand(client, channel, user);
     }
   }

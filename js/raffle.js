@@ -1,8 +1,9 @@
 var raffleKey = "raffle";
-var activeRaffle = true;
+var raffleIsEnabled = Boolean(localStorage.getItem("raffleIsEnabled")) || false;
+var raffleAcceptEntries = Boolean(localStorage.getItem("raffleAcceptEntries")) || false;
 
 function raffleAddEntry(day, user) {
-	if (config.mods.includes(user)) {
+	if (config.mods.includes(user) || !raffleAcceptEntries || !raffleIsEnabled) {
 		return;
 	}
 	var entries = raffleGetEntries();
@@ -65,4 +66,14 @@ function raffleDebug(client, channel) {
 function raffleDrawCommand(client, channel) {
 	var winner = raffleDo();
 	client.say(channel, "The winner of the raffle is @" + winner + "! YIPYIPYIYPYIPYIYPYIPYIPYIP");
+}
+
+function raffleSetAcceptEntries(enabled) {
+	raffleAcceptEntries = Boolean(enabled);
+	localStorage.setItem("raffleAcceptEntries", enabled.toString());
+}
+
+function raffleSetIsEnabled(enabled) {
+	raffleIsEnabled = Boolean(enabled);
+	localStorage.setItem("raffleIsEnabled", enabled.toString());
 }
