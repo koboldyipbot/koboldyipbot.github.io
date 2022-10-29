@@ -1,7 +1,13 @@
 function fetchUserYips(user) {
   if (!(user in state.userYips)) {
+    let yips = localStorage.getItem(user);
+    if (yips == null) {
+        yips = 0;
+    } else {
+        yips = parseInt(yips);
+    }
     state.userYips[user] = {
-      yips: 0,
+      yips: yips,
       commandCooldown: false,
       lastTimestamp: new Date()
     };    
@@ -15,14 +21,16 @@ function updateYips(user, extraYips) {
   if (config.mods.includes(user)) {
     userYips.yips = 99999999999999;
   } else {
-    userYips.yips = userYips.yips + (extraYips || 0);
-
     var newTimestamp = new Date();
     var seconds = Math.floor(getSecondsDiff(newTimestamp, userYips.lastTimestamp) / config.secondsPerYip);
     if (seconds > 0) {
       userYips.lastTimestamp = new Date();
-      userYips.yips += seconds;
+      userYips.yips = Math.min(100, userYips.yips + seconds + (extraYips || 0));
+      localStorage.setItem(user, userYips.yips);
+    } else {
+        userYips.yips = Math.min(100, userYips.yips + (extraYips || 0));
     }
+    console.log("h" + userYips.yips);
   }
 }
 
@@ -31,10 +39,52 @@ function reset_yip() {
     state.isYipping = false;
 }
 
-function yip(client, target, yipCount, msPerYip) {
-    var audio = new Audio('sounds/yip.mp3');
-    audio.loop = false;
-    audio.play();
+function mario_yip() {
+    play_song([1.5, 1.5, 1.5, 1.2, 1.5, 1.8, 0.9]);
+}
+
+function girl_in_the_tower_yip() {
+    play_song([1.1, 1.21, 1.3, 1.3, 1.21, 1.21, 1.1, 1.3, 1.21, 1.21, 1.43, 1.43, 1.3, 1.3, 1.21, 1.1]);
+}
+
+function play_song(pitches) {
+    if (state.isSinging) {
+        console.log(":(")
+        return;
+    }
+    state.isSinging = true;
+    var a = new Audio("sounds/yip.mp3");
+    a.volume = 0.05;
+
+    a.mozPreservesPitch = false;
+    a.webkitPreservesPitch = false;
+    a.preservesPitch = false;
+
+    var index = 0;
+    
+    a.onended = function() {
+        index += 1;
+        a.playbackRate = pitches[index];
+        a.play();
+        animate_yip();
+        if (index >= pitches.length-1) {
+            state.isSinging = false;
+            a.onended = null;
+        }
+    }
+
+
+    a.playbackRate = pitches[index];
+    a.play();
+    animate_yip();
+
+}
+
+function cheer_yip(channel, context, msg, self) {
+    yip(client, target, yipCount, msPerYip);
+}
+
+function animate_yip() {
     var size = Math.floor(Math.random() * 18) + 6;
     var span = $('<span class="yip">yip</span>');
     span.css({
@@ -84,7 +134,6 @@ function yip(client, target, yipCount, msPerYip) {
         );
         dir = dir * -1;
     }
-    
     var nextDate = new Date();
     if (!state.isYipping && getMillisecondsDiff(state.lastYipDate, nextDate) > config.minimumYipGapMilliseconds * 2) {
         state.isYipping = true;
@@ -93,8 +142,22 @@ function yip(client, target, yipCount, msPerYip) {
         $("#yip").attr("src", config.image2);
         setTimeout(reset_yip, config.minimumYipGapMilliseconds);
     }
+}
+
+function yip(yipCount, msPerYip) {
+    var audio = new Audio('sounds/yip.mp3');
+    audio.volume = 0.05;
+    audio.loop = false;
+    audio.mozPreservesPitch = false;
+    audio.webkitPreservesPitch = false;
+    audio.preservesPitch = false;
+    audio.playbackRate = 0.8 + Math.random()*0.8
+    audio.play();
+
+    
+   animate_yip();
 
     if (yipCount > 0) {
-        setTimeout(yip, msPerYip, client, target, yipCount-1, msPerYip);
+        setTimeout(yip, msPerYip, yipCount-1, msPerYip);
     }
 }

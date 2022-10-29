@@ -6,8 +6,7 @@ const config = {
     twitchUsername: "yip_bot",
     twitchOAuthPassword: "", // Official OAuth token generator: https://twitchapps.com/tmi/
     twitchChannels: [
-        "kobold_wyx",
-        "shakarhye"
+        "kobold_wyx"
     ],
     yipOffsetLeft: 80,
     yipOffsetTop: 0,

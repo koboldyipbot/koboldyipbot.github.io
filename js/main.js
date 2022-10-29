@@ -11,23 +11,44 @@ const opts = {
 const client = new tmi.client(opts);
 
 // Register our event handlers (defined below)
+// client.on('raw_message', (message) => {
+//   console.log(message.raw);
+//   console.log(message);
+// });
 client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
+client.on('cheer', cheer_yip);
 
 // Connect to Twitch:
 client.connect();
 
+function poll_channel_points() {
+
+}
+
+function postLink() {
+  client.say("kobold_wyx", "https://youtu.be/2vrAc_c9RRI");
+  setTimeout(postLink, 600000);
+}
+
 function doHelp(channel, context) {
-  state.helpInCooldown
   var user = context["display-name"];
   var userYips = fetchUserYips(user);
   client.say(channel, "@" + user + ": You have " + userYips.yips + " yips! To use them, run `!yip <number of yips> <milliseconds between yips>`");
+}
+
+function hello() {
+  var audio = new Audio('sounds/hello.mp3');
+  audio.loop = false;
+  audio.play();
 }
 
 // Called every time a message comes in
 function onMessageHandler (channel, context, msg, self) {
   if (self) { return; }
 
+  // console.log(context);
+  // console.log(msg);
   var user = context["display-name"];
   updateYips(user);
 
@@ -35,34 +56,77 @@ function onMessageHandler (channel, context, msg, self) {
 
   // Remove whitespace from chat message
   const command = msg.trim();
+  console.log(command);
 
   // If the command is known, let's execute it
-  if (command.slice(0,8) === "!yiphelp") {
+  var commandArr = command.split(/\s+/);
+
+  if (commandArr[0] === "!yiphelp") {
     doHelp(channel, context);
-  } else if (command.slice(0,4) === '!yip') {
-    var args = command.split(" ", 3);
-    var yips = parseInt(args[1]);
-    var msPerYip = parseInt(args[2]);
+  } else if (commandArr[0] === "!yipsong") {
+      if (commandArr[1] === "mario") {
+        mario_yip();
+      } else if (commandArr[1] === "girl") {
+        girl_in_the_tower_yip();
+      } else if (commandArr[1] === "custom") {
+        if (commandArr.length > 18) {
+          client.say(channel, "Only 16 notes max!");
+        } else {
+          var valid = true;
+          for (var i = 2; i < commandArr.length; i++) {
+            valid = !isNaN(commandArr[i]) && !isNaN(parseFloat(commandArr[i]));
+            if (!valid) {
+              return;
+            }
+          }
+          play_song(commandArr.slice(2,commandArr.length));
+        }
+      } else {
+        client.say(channel, "Current songs: mario, girl");
+      }
+  } else if (commandArr[0] === '!yip') {
 
-    if ((isNaN(yips) || isNaN(msPerYip)) && !state.helpInCooldown) {
-      doHelp(channel, context);
-      return;
-    }
+    var args = command.split(/ +/, 4);
+    if (args[1] === "give" && config.mods.includes(user)) {
+      var user = args[2];
+      var yips = parseInt(args[3]);
 
-    if (msPerYip < config.minimumYipGapMilliseconds) {
-      client.say(channel, "@" + user + ": The minimum gap between yips in milliseconds is " + config.minimumYipGapMilliseconds + "!");
-      return;
-    }
+      updateYips(user, yips);
 
-    var userYips = fetchUserYips(user);
-    if (userYips.yips <= 0) {
-      var user = context["display-name"];
-      client.say(channel, "@" + user + ": You only have " + userYips.yips + " yips!");
-      return;
+    } else {
+      var yips = parseInt(args[1]);
+      var msPerYip = parseInt(args[2]);
+      if ((isNaN(yips) || isNaN(msPerYip)) && !state.helpInCooldown) {
+        doHelp(channel, context);
+        return;
+      }
+
+      if (msPerYip < config.minimumYipGapMilliseconds) {
+        client.say(channel, "@" + user + ": The minimum gap between yips in milliseconds is " + config.minimumYipGapMilliseconds + "!");
+        return;
+      }
+
+      var userYips = fetchUserYips(user);
+      if (userYips.yips <= 0) {
+        var user = context["display-name"];
+        client.say(channel, "@" + user + ": You only have " + userYips.yips + " yips!");
+        return;
+      }
+      
+      yip(yips, msPerYip);
+      updateYips(user, -yips);
     }
-    
-    yip(client, channel, yips, msPerYip);
-    updateYips(user, -yips);
+  } else if (commandArr[0] === "!hello") {
+    var isMod = config.mods.includes(user);
+    if (isMod && command.slice(7, 10) === "off") {
+      state.helloEnabled = false;
+    } else if (isMod && command.slice(7, 10) === "on") {
+      state.helloEnabled = true;
+    } else if (state.helloEnabled || isMod) {
+      hello();
+    }
+  } else if (commandArr[0] === "!raffle") {
+    client.say(channel, "Congratulations! You've entered the raffle! Chatting during a stream gets you one entry (1 entry per stream). Full details will be posted on https://twitter.wyx.gay soon!");
   }
 }
 
@@ -75,6 +139,7 @@ function onMessageHandler (channel, context, msg, self) {
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
+  // postLink();
 }
 
 $.when( $.ready ).then(function() {
