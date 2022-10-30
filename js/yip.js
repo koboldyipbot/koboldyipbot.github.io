@@ -64,7 +64,7 @@ function play_song(pitches) {
     
     a.onended = function() {
         index += 1;
-        a.playbackRate = Math.pow(2,(1+((pitches[index]+70)/12)));
+        a.playbackRate = Math.pow(2,(1+((pitches[index]-70)/12)));
         a.play();
         animate_yip();
         if (index >= pitches.length-1) {
