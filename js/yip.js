@@ -40,11 +40,11 @@ function reset_yip() {
 }
 
 function mario_yip() {
-    play_song([1.5, 1.5, 1.5, 1.2, 1.5, 1.8, 0.9]);
+    play_song([65, 65, 65, 61, 65, 68, 56]);
 }
 
 function girl_in_the_tower_yip() {
-    play_song([1.1, 1.21, 1.3, 1.3, 1.21, 1.21, 1.1, 1.3, 1.21, 1.21, 1.43, 1.43, 1.3, 1.3, 1.21, 1.1]);
+    play_song([59.6, 61.3, 62.5, 62.5, 61.3, 61.3, 59.6, 62.5, 61.3, 61.3, 64.2, 64.2, 62.5, 62.5, 61.3, 59.6]);
 }
 
 function play_song(pitches) {
@@ -64,7 +64,7 @@ function play_song(pitches) {
     
     a.onended = function() {
         index += 1;
-        a.playbackRate = pitches[index];
+        a.playbackRate = Math.pow(2,(1+((pitches[index]-70)/12)));
         a.play();
         animate_yip();
         if (index >= pitches.length-1) {
