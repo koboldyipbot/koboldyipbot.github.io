@@ -7,4 +7,5 @@ Can be used to interactively yip without configuring the Twitch integration.  Ju
 
 ## Licensing ##
 You may use this code however you see fit as long as you attribute creation to Ames (@KoboldUnderlord on Twitter)
+
 Do not repackage this and sell it, I mainly wish it just to be used for fun by people who download it
