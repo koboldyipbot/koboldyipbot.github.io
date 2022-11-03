@@ -151,7 +151,7 @@ function onMessageHandler (channel, context, msg, self) {
         } else if (cmd === "clear") {
           raffleClearEntries();
         } else if (cmd === "checkEntries") {
-          var user = commandArr[2];aaaaa
+          var user = commandArr[2];
           raffleAdminQueryCommand(client, channel, user);
         } else if (cmd === "debug") {
           raffleDebug(client, channel);
