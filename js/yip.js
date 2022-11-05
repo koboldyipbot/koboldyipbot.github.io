@@ -1,3 +1,5 @@
+var baseYip = new Audio("sounds/yip.mp3");
+
 function fetchUserYips(user) {
   if (!(user in state.userYips)) {
     let yips = localStorage.getItem(user);
@@ -53,14 +55,13 @@ function play_song(pitches) {
         return;
     }
     state.isSinging = true;
-    var a = new Audio("sounds/yip.mp3");
-    a.volume = 0.05;
-
+    var a = baseYip.cloneNode(true);
     a.mozPreservesPitch = false;
     a.webkitPreservesPitch = false;
     a.preservesPitch = false;
 
     var index = 0;
+    a.volume = 0.05;
     
     a.onended = function() {
         index += 1;
@@ -73,11 +74,9 @@ function play_song(pitches) {
         }
     }
 
-
-    a.playbackRate = pitches[index];
+    a.playbackRate = Math.pow(2,(1+((pitches[index]-70)/12)));
     a.play();
     animate_yip();
-
 }
 
 function cheer_yip(channel, context, msg, self) {
@@ -145,7 +144,7 @@ function animate_yip() {
 }
 
 function yip(yipCount, msPerYip) {
-    var audio = new Audio('sounds/yip.mp3');
+    var audio = baseYip.cloneNode(true);
     audio.volume = 0.05;
     audio.loop = false;
     audio.mozPreservesPitch = false;
@@ -153,11 +152,9 @@ function yip(yipCount, msPerYip) {
     audio.preservesPitch = false;
     audio.playbackRate = 0.8 + Math.random()*0.8
     audio.play();
+    animate_yip();
 
-    
-   animate_yip();
-
-    if (yipCount > 0) {
+    if (yipCount-1 > 0) {
         setTimeout(yip, msPerYip, yipCount-1, msPerYip);
     }
 }
