@@ -41,18 +41,82 @@ function reset_yip() {
     state.isYipping = false;
 }
 
-function mario_yip() {
-    play_song([65, 65, 65, 61, 65, 68, 56]);
+function marioYip() {
+    playSong([
+        65, 65, 65, 61, 65, 68, 56
+    ]);
 }
 
-function girl_in_the_tower_yip() {
-    play_song([59.6, 61.3, 62.5, 62.5, 61.3, 61.3, 59.6, 62.5, 61.3, 61.3, 64.2, 64.2, 62.5, 62.5, 61.3, 59.6]);
+function girlInTheTowerYip() {
+    playSong([
+        59.6,
+        61.3,
+        62.5, 
+        [62.5, 600], 
+        [61.3, 300], 
+        61.3, 
+        59.6, 
+        [62.5, 600], 
+        [61.3, 300], 
+        61.3,
+        64.2, 
+        [64.2, 600], 
+        [62.5, 300], 
+        62.5,
+        61.3, 
+        59.6
+    ]);
 }
 
-function play_song(pitches) {
-    if (state.isSinging) {
+function chargeYip() {
+    playSong([
+        [55, 200],
+        [60, 200],
+        [64, 200],
+        [67, 400],
+        [64, 150],
+        67
+    ]);
+}
+
+function detokenizeYipSong(song) {
+    // return null if invalid song
+    var splitted = song.replaceAll('[', '[ ').replaceAll(']', ' ]').replaceAll(",", "").split(/\s+/);
+    var song = [];
+    var index = 0;
+    while (index < splitted.length) {
+        if (splitted[index] === "[") {
+            // pitch and length
+            var pitch = Number(splitted[index+1]);
+            var length = Number(splitted[index+2]);
+            if (!pitch || !length) {
+                return null;
+            }
+            song.push([pitch, length]);
+            if (splitted[index+3] != "]") {
+                return null;
+            }
+            index += 4;
+        } else {
+            // just pitch
+            var pitch = Number(splitted[index]);
+            if (!pitch) {
+                return null;
+            }
+            song.push(pitch);
+            index += 1;
+        }
+    }
+    return song;
+}
+
+function playSong(song, forceSong, index) {
+    if (forceSong === undefined && state.isSinging) {
         console.log(":(")
         return;
+    }
+    if (index === undefined) {
+        index = 0;
     }
     state.isSinging = true;
     var a = baseYip.cloneNode(true);
@@ -60,23 +124,26 @@ function play_song(pitches) {
     a.webkitPreservesPitch = false;
     a.preservesPitch = false;
 
-    var index = 0;
     a.volume = 0.05;
-    
-    a.onended = function() {
-        index += 1;
-        a.playbackRate = Math.pow(2,(1+((pitches[index]-70)/12)));
-        a.play();
-        animate_yip();
-        if (index >= pitches.length-1) {
-            state.isSinging = false;
-            a.onended = null;
-        }
+
+    var midiPitch;
+    var lengthInMillis;
+    if (Array.isArray(song[index])) {
+        midiPitch = song[index][0];
+        lengthInMillis = song[index][1];
+    } else {
+        midiPitch = song[index];
+        lengthInMillis = config.defaultYipSongNoteLength;
     }
 
-    a.playbackRate = Math.pow(2,(1+((pitches[index]-70)/12)));
+    a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
     a.play();
     animate_yip();
+    if (index < song.length-1) {
+        setTimeout(playSong, lengthInMillis, song, true, index+1);
+    } else {
+        state.isSinging = false;
+    }
 }
 
 function cheer_yip(channel, context, msg, self) {

@@ -1,4 +1,5 @@
 const config = {
+    defaultYipSongNoteLength: 400,
     secondsPerYip: 15,
     minimumYipGapMilliseconds: 50,
     image1: "images/yip1.png",

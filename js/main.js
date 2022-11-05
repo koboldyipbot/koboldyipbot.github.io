@@ -65,25 +65,28 @@ function onMessageHandler (channel, context, msg, self) {
   if (commandArr[0] === "!yiphelp") {
     doHelp(channel, context);
   } else if (commandArr[0] === "!yipsong") {
-      if (commandArr[1] === "mario") {
-        mario_yip();
-      } else if (commandArr[1] === "girl") {
-        girl_in_the_tower_yip();
-      } else if (commandArr[1] === "custom") {
+      var song = commandArr[1];
+      if (song === "mario") {
+        marioYip();
+      } else if (song === "girl") {
+        girlInTheTowerYip();
+      } else if (song === "charge") {
+        chargeYip();
+      } else if (song === "custom") {
         if (commandArr.length > 18) {
           client.say(channel, "Only 16 notes max!");
         } else {
+          var songString = commandArr.slice(2).join(" ");
+          var song = detokenizeYipSong(songString);
           var valid = true;
-          for (var i = 2; i < commandArr.length; i++) {
-            valid = !isNaN(commandArr[i]) && !isNaN(parseFloat(commandArr[i]));
-            if (!valid) {
-              return;
-            }
+          if (song) {
+            playSong(song);
+          } else {
+            client.say(channel, "Invalid custom song! You can pass a midi pitch number or that number and a note length inside square brackets, ie. [75, 400] will play C5 for .4 seconds");
           }
-          play_song(commandArr.slice(2,commandArr.length));
         }
       } else {
-        client.say(channel, "Current songs: mario, girl");
+        client.say(channel, "Current songs: custom, mario, girl, charge");
       }
   } else if (commandArr[0] === '!yip') {
 
