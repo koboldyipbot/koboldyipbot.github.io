@@ -72,6 +72,8 @@ function onMessageHandler (channel, context, msg, self) {
         girlInTheTowerYip();
       } else if (song === "charge") {
         chargeYip();
+      } else if (song === "sans") {
+        sansYip();
       } else if (song === "custom") {
         if (commandArr.length > 18) {
           client.say(channel, "Only 16 notes max!");
@@ -86,7 +88,7 @@ function onMessageHandler (channel, context, msg, self) {
           }
         }
       } else {
-        client.say(channel, "Current songs: custom, mario, girl, charge");
+        client.say(channel, "Current songs: custom, mario, girl, charge, sans");
       }
   } else if (commandArr[0] === '!yip') {
 
@@ -129,6 +131,8 @@ function onMessageHandler (channel, context, msg, self) {
     } else if (state.helloEnabled || isMod) {
       hello();
     }
+  } else if (commandArr[0] === "!artist") {
+    client.say(channel, "The current vtuber artist today is @WilcoWeb!");
   } else if (commandArr[0] === "!raffle") {
     var isMod = config.mods.includes(user);
     var cmd = commandArr[1];

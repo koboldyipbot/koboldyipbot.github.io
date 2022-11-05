@@ -79,6 +79,15 @@ function chargeYip() {
     ]);
 }
 
+function sansYip() {
+    playSong([
+        [62, 200],
+        [62, 200],
+        [74, 600],
+        69
+    ]);
+}
+
 function detokenizeYipSong(song) {
     // return null if invalid song
     var splitted = song.replaceAll('[', '[ ').replaceAll(']', ' ]').replaceAll(",", "").split(/\s+/);
@@ -113,6 +122,8 @@ function detokenizeYipSong(song) {
 function playSong(song, forceSong, index) {
     if (forceSong === undefined && state.isSinging) {
         console.log(":(")
+        // var val = $("#debugdiv").val();
+        // $("#debugdiv").html(())
         return;
     }
     if (index === undefined) {
