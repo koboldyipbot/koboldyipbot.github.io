@@ -61,6 +61,7 @@ function onMessageHandler (channel, context, msg, self) {
 
   // If the command is known, let's execute it
   var commandArr = command.split(/\s+/);
+  var isMod = config.mods.includes(user);
 
   if (commandArr[0] === "!yiphelp") {
     doHelp(channel, context);
@@ -79,7 +80,7 @@ function onMessageHandler (channel, context, msg, self) {
       } else if (song === "yipshanty2") {
         yipShanty2Yip();
       } else if (song === "custom") {
-        if (commandArr.length > 18) {
+        if (commandArr.length > 18 && !isMod) {
           client.say(channel, "Only 16 notes max!");
         } else {
           var songString = commandArr.slice(2).join(" ");
@@ -127,7 +128,6 @@ function onMessageHandler (channel, context, msg, self) {
       updateYips(user, -yips);
     }
   } else if (commandArr[0] === "!hello") {
-    var isMod = config.mods.includes(user);
     if (isMod && command.slice(7, 10) === "off") {
       state.helloEnabled = false;
     } else if (isMod && command.slice(7, 10) === "on") {
