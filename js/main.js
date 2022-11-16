@@ -90,7 +90,7 @@ function onMessageHandler (channel, context, msg, self) {
           }
         }
       } else {
-        client.say(channel, "Current songs: custom, mario, girl, charge, sans");
+        client.say(channel, "Current songs: custom, mario, girl, charge, sans, yakety");
       }
   } else if (commandArr[0] === '!yip') {
 
