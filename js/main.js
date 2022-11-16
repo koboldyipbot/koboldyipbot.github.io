@@ -74,6 +74,8 @@ function onMessageHandler (channel, context, msg, self) {
         chargeYip();
       } else if (song === "sans") {
         sansYip();
+      } else if (song === "yakety") {
+        yaketyYip();
       } else if (song === "custom") {
         if (commandArr.length > 18) {
           client.say(channel, "Only 16 notes max!");
