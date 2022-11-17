@@ -76,6 +76,8 @@ function onMessageHandler (channel, context, msg, self) {
         sansYip();
       } else if (song === "yakety") {
         yaketyYip();
+      } else if (song === "yipshanty2") {
+        yipShanty2Yip();
       } else if (song === "custom") {
         if (commandArr.length > 18) {
           client.say(channel, "Only 16 notes max!");
@@ -90,7 +92,7 @@ function onMessageHandler (channel, context, msg, self) {
           }
         }
       } else {
-        client.say(channel, "Current songs: custom, mario, girl, charge, sans, yakety");
+        client.say(channel, "Current songs: custom, mario, girl, charge, sans, yakety, yipshanty2");
       }
   } else if (commandArr[0] === '!yip') {
 

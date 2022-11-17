@@ -162,7 +162,8 @@ function playSong(song, forceSong, index) {
     }
     state.isSinging = true;
     var yips = [];
-    for (var yip in song) {
+    for (var yipIndex in song) {
+        // if (yipIndex > 2) { break; }
       var a = baseYip.cloneNode(true);
       a.mozPreservesPitch = false;
       a.webkitPreservesPitch = false;
@@ -172,11 +173,11 @@ function playSong(song, forceSong, index) {
 
       var midiPitch;
       var lengthInMillis;
-      if (Array.isArray(song[index])) {
-          midiPitch = song[index][0];
-          lengthInMillis = song[index][1];
+      if (Array.isArray(song[yipIndex])) {
+          midiPitch = song[yipIndex][0];
+          lengthInMillis = song[yipIndex][1];
       } else {
-          midiPitch = song[index];
+          midiPitch = song[yipIndex];
           lengthInMillis = config.defaultYipSongNoteLength;
       }
 
@@ -184,10 +185,12 @@ function playSong(song, forceSong, index) {
       yips.push([a, lengthInMillis]);
     }
     
-    playSongInner(yips, 0);
+    setTimeout(playSongInner, Math.min(Math.max(yips[0][1], 100), 100), yips, 0);
 }
 
-function playSongInner(song, index) {
+var stopSong = false;
+
+function playSongInner(song, index) {  
   var a = song[index][0];
   var lengthInMillis = song[index][1];
   while(lengthInMillis == 0 && index < song.length-2) {
@@ -197,10 +200,11 @@ function playSongInner(song, index) {
     lengthInMillis = song[index][1];
   }
   
+  animate_yip();
   a.play();
   
-  if (index < song.length-1) {
-    setTimeout(playSongInner, lengthInMillis, song, true, index+1); 
+  if (index < song.length-1 && !stopSong) {
+    setTimeout(playSongInner, lengthInMillis, song, index+1); 
   } else {
     state.isSinging = false;
   }
