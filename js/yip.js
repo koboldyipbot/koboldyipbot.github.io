@@ -102,6 +102,23 @@ function yaketyYip() {
   ]);
 }
 
+function yipShanty2Yip() {
+  playSong([
+    [69, 300], [64, 150], [62, 150], [61, 450], [61, 150], [62, 150], [64, 150], [66, 150], [68, 150], [64, 600], 
+    [66, 300], [64, 150], [62, 150], [61, 300], [61, 300], [59, 300], [61, 300], [62, 600], 
+    [69, 300], [64, 150], [62, 150], [61, 600], [61, 150], [62, 150], [64, 150], [66, 150], [62, 600], 
+    [66, 150], [64, 150], [62, 150], [61, 150], [59, 150], [61, 150], [62, 150], [66, 150], [64, 150], [62, 150], [61, 150], [59, 150], [57, 600], 
+    [61, 150], [59, 150], [61, 300], [61, 300], [61, 150], [59, 150], [61, 300], [59, 300], [61, 600], 
+    [57, 150], [59, 150], [61, 150], [62, 150], [61, 300], [59, 300], [61, 1200], 
+    [61, 150], [59, 150], [61, 300], [61, 300], [62, 150], [61, 150], [59, 300], [64, 300], [61, 600], 
+    [61, 150], [59, 150], [61, 150], [62, 150], [61, 300], [57, 300], [61, 1200], 
+    [64, 150], [62, 150], [64, 300], [64, 300], [64, 150], [62, 150], [64, 300], [66, 300], [64, 600], 
+    [68, 300], [68, 150], [66, 150], [64, 300], [62, 300], [64, 1200], 
+    [61, 150], [59, 150], [61, 300], [61, 300], [59, 150], [61, 150], [62, 300], [59, 300], [61, 600], 
+    [61, 150], [59, 150], [61, 0], [64, 100], [62, 100], [61, 100], [59, 0], [61, 300], [57, 0], [61, 300], [57, 0], [45, 1200], 
+  ]);
+}
+
 function detokenizeYipSong(song) {
     // return null if invalid song
     var splitted = song.replaceAll('[', '[ ').replaceAll(']', ' ]').replaceAll(",", "").split(/\s+/);
@@ -144,31 +161,49 @@ function playSong(song, forceSong, index) {
         index = 0;
     }
     state.isSinging = true;
-    var a = baseYip.cloneNode(true);
-    a.mozPreservesPitch = false;
-    a.webkitPreservesPitch = false;
-    a.preservesPitch = false;
+    var yips = [];
+    for (var yip in song) {
+      var a = baseYip.cloneNode(true);
+      a.mozPreservesPitch = false;
+      a.webkitPreservesPitch = false;
+      a.preservesPitch = false;
 
-    a.volume = 0.05;
+      a.volume = 0.05;
 
-    var midiPitch;
-    var lengthInMillis;
-    if (Array.isArray(song[index])) {
-        midiPitch = song[index][0];
-        lengthInMillis = song[index][1];
-    } else {
-        midiPitch = song[index];
-        lengthInMillis = config.defaultYipSongNoteLength;
+      var midiPitch;
+      var lengthInMillis;
+      if (Array.isArray(song[index])) {
+          midiPitch = song[index][0];
+          lengthInMillis = song[index][1];
+      } else {
+          midiPitch = song[index];
+          lengthInMillis = config.defaultYipSongNoteLength;
+      }
+
+      a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
+      yips.push([a, lengthInMillis]);
     }
+    
+    playSongInner(yips, 0);
+}
 
-    a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
+function playSongInner(song, index) {
+  var a = song[index][0];
+  var lengthInMillis = song[index][1];
+  while(lengthInMillis == 0 && index < song.length-2) {
     a.play();
-    animate_yip();
-    if (index < song.length-1) {
-        setTimeout(playSong, lengthInMillis, song, true, index+1);
-    } else {
-        state.isSinging = false;
-    }
+    index += 1;
+    a = song[index][0];
+    lengthInMillis = song[index][1];
+  }
+  
+  a.play();
+  
+  if (index < song.length-1) {
+    setTimeout(playSongInner, lengthInMillis, song, true, index+1); 
+  } else {
+    state.isSinging = false;
+  }
 }
 
 function cheer_yip(channel, context, msg, self) {
