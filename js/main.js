@@ -79,6 +79,10 @@ function onMessageHandler (channel, context, msg, self) {
         yaketyYip();
       } else if (song === "yipshanty2") {
         yipShanty2Yip();
+      } else if (song === "blinded") {
+        blindedYip();
+      } else if (song === "angel") {
+        angelYip();
       } else if (song === "custom") {
         if (commandArr.length > 18 && !isMod) {
           client.say(channel, "Only 16 notes max!");

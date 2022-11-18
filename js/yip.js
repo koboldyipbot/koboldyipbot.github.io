@@ -130,6 +130,78 @@ function sandstormYip() {
     ]);
 }
 
+/*
+recommended max note range - x gets a little awkward
+
+x  x                                            x
+52 53 55 57 59 60 62 64 65 67 69 71 72 74 76 77 79
+e  f  g  a  b  c  d  e  f  g  a  b  c  d  e  f  g
+        
+*/
+
+function blindedYip() {
+    // 150 bpm, 1600 ms per bar
+    playSong([
+        [62, 800], [62, 600], [60, 200], 
+        [62, 200], [64, 400], [57, 400], [60, 600],
+        [62, 800], [62, 600], [60, 200], 
+        [62, 200], [64, 400], [57, 400], [60, 600],
+        [67, 200], [64, 400], [62, 400], [60, 600], 
+        [67, 200], [64, 400], [62, 400], [60, 600], 
+        [62, 0], [52, 0], [59, 200], [62, 0], [59, 200], [62, 0], [59, 200], [62, 0], [59, 200], [52, 0], [62, 0], [59, 200], [62, 0], [59, 200], [62, 0], [59, 200], [62, 0], [59, 200], 
+        // [62, 0], [52, 0], [59, 200], [62, 0], [59, 200], [62, 0], [59, 200], [62, 0], [59, 200],
+    ]);
+}
+
+function angelYip() {
+    
+
+    /* 80 bpm, 3000 ms per bar */
+    var whole = 3000;
+    var half = whole/2;
+    var quarter = half/2;
+    var eighth = quarter/2;
+    var sixteenth = eighth/2;
+
+    var line1 = [
+        [51, 0], [55, 0], [60, quarter], [63, quarter], [60, 0],  [56, 0], [65, eighth+sixteenth], [63, eighth+sixteenth], [65, eighth], 
+        [62, 0], [58, 0], [65, eighth], [65, eighth], [70, eighth], [68, eighth], [67, 0], [55, 0], [63, sixteenth], [65, eighth], [63, 0], [67, quarter+sixteenth],
+        [63, 0], [60, 0], [67, quarter], [70, quarter], [65, 0], [68, 0], [72, eighth+sixteenth], [65, eighth+sixteenth], [63, eighth],
+        [62, 0], [70, eighth], [62, 0], [70, eighth], [62, 0], [67, eighth], [62, 0], [70, eighth], [62, 0], [70, eighth+sixteenth], [63, 0], [72, eighth+sixteenth+1850], 
+    ];
+
+    /* 130 bpm, 1846.153846153846 ms per bar, let's do 1850 */
+    var whole = 2000;
+    var half = whole/2;
+    var quarter = half/2;
+    var eighth = quarter/2;
+    var sixteenth = eighth/2;
+    
+
+    var line2 = [
+        [51, 0], [55, 0], [60, quarter], [63, quarter], [60, 0], [56, 0], [65, eighth+sixteenth], [63, eighth+sixteenth], [65, eighth], 
+        [62, 0], [58, 0], [65, eighth], [65, eighth], [70, eighth], [68, eighth], [67, 0], [55, 0], [63, sixteenth], [65, eighth], [63, 0], [67, quarter+sixteenth],
+        [63, 0], [60, 0], [67, quarter], [70, quarter], [65, 0], [68, 0], [72, eighth+sixteenth], [65, eighth+sixteenth], [63, eighth],
+        [58, 0], [70, eighth], [58, 0], [70, eighth], [55, 0], [67, eighth], [58, 0], [70, eighth], [58, 0], [70, eighth+sixteenth], [60, 0], [72, quarter+sixteenth+quarter], 
+    ];
+
+    /*
+                                                                        x  x                                            x
+                                                                        51 53 55 56 58 60 62 63 65 67 68 70 72 74 75 77 79
+                                                                        eb f  g  ab bb c  d  eb f  g  ab bb c  d  eb f  g
+    */
+
+    var line3 = [
+        [63, eighth], [58, sixteenth], [58, quarter+eighth+sixteenth], [63, eighth], 
+        [58, 0], [63, eighth+sixteenth], [65, eighth+sixteenth], [58, eighth], [58, quarter+eighth], [63, sixteenth], [65, sixteenth], 
+        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [60, 0], [67, eighth], [58, 0], [62, 0], [65, eighth+sixteenth], [63, eighth+sixteenth], [65, eighth+sixteenth], 
+    ];
+
+    playSong(line3);
+
+    playSong(first.concat(second));
+}
+
 function detokenizeYipSong(song) {
     // return null if invalid song
     var splitted = song.replaceAll('[', '[ ').replaceAll(']', ' ]').replaceAll(",", "").split(/\s+/);
