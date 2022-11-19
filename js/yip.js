@@ -32,7 +32,6 @@ function updateYips(user, extraYips) {
     } else {
         userYips.yips = Math.min(100, userYips.yips + (extraYips || 0));
     }
-    console.log("h" + userYips.yips);
   }
 }
 
@@ -190,14 +189,35 @@ function angelYip() {
                                                                         51 53 55 56 58 60 62 63 65 67 68 70 72 74 75 77 79
                                                                         eb f  g  ab bb c  d  eb f  g  ab bb c  d  eb f  g
     */
+    
 
     var line3 = [
         [63, eighth], [58, sixteenth], [58, quarter+eighth+sixteenth], [63, eighth], 
         [58, 0], [63, eighth+sixteenth], [65, eighth+sixteenth], [58, eighth], [58, quarter+eighth], [63, sixteenth], [65, sixteenth], 
-        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [60, 0], [67, eighth], [58, 0], [62, 0], [65, eighth+sixteenth], [63, eighth+sixteenth], [65, eighth+sixteenth], 
+        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [60, 0], [67, eighth], [58, 0], [62, 0], [65, eighth+sixteenth], [58, 0], [60, 0], [63, eighth+sixteenth], [58, 0], [62, 0], [65, eighth+sixteenth], 
+        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [60, 0], [63, 0], [67, eighth+sixteenth], [60, quarter+eighth], [60, sixteenth], [62, sixteenth],
+        [58, 0], [53, 0], [63, eighth+sixteenth], [58, 0], [53, 0], [63, eighth+sixteenth], [58, 0], [53, 0], [62, eighth], [58, 0], [53, 0], [62, quarter+eighth], [63, sixteenth], [65, sixteenth],
     ];
 
-    playSong(line3);
+
+    var line4 = [
+        [63, 0], [58, 0], [68, eighth+sixteenth], [63, 0], [58, 0], [67, eighth+sixteenth], [62, 0], [58, 0], [65, eighth], [63, quarter+eighth], [67, eighth],
+        [62, 0], [57, 0], [67, eighth+sixteenth], [62, 0], [57, 0], [65, eighth+sixteenth], [57, 0], [64, eighth], [62, 0], [57, 0], [65, quarter], [60, quarter],
+        [57, 0], [53, 0], [60, quarter+eighth], [59, 0], [55, 0], [62, eighth], [59, 0], [55, 0], [62, half+quarter], [63, eighth], [58, sixteenth], [58, quarter+eighth+sixteenth], [63, eighth],
+        [58, 0], [63, eighth+sixteenth], [65, eighth+sixteenth], [58, eighth], [58, quarter+eighth], [63, sixteenth], [65, sixteenth],
+    ];
+
+
+    var whole = 2000;
+    var half = whole/2;
+    var quarter = half/2;
+    var eighth = quarter/2;
+    var sixteenth = eighth/2;
+    var line5 = [
+        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [63, 0], [67, eighth], [58, 0], [62, 0], [65, eighth+sixteenth], [63, eighth+sixteenth], [65, eighth],
+    ];
+
+    playSong(line1.concat(line2).concat(line3).concat(line4));
 
     playSong(first.concat(second));
 }
@@ -233,64 +253,72 @@ function detokenizeYipSong(song) {
     return song;
 }
 
-function playSong(song, forceSong, index) {
+function playSong(song, forceSong) {
     if (forceSong === undefined && state.isSinging) {
         console.log(":(")
         // var val = $("#debugdiv").val();
         // $("#debugdiv").html(())
         return;
     }
-    if (index === undefined) {
-        index = 0;
-    }
     state.isSinging = true;
-    var yips = [];
-    for (var yipIndex in song) {
-        // if (yipIndex > 2) { break; }
-      var a = baseYip.cloneNode(true);
-      a.mozPreservesPitch = false;
-      a.webkitPreservesPitch = false;
-      a.preservesPitch = false;
+    try {
+        var yips = [];
+        for (var yipIndex in song) {
+            // if (yipIndex > 2) { break; }
+          var a = baseYip.cloneNode(true);
+          a.mozPreservesPitch = false;
+          a.webkitPreservesPitch = false;
+          a.preservesPitch = false;
 
-      a.volume = 0.05;
+          a.volume = 0.05;
 
-      var midiPitch;
-      var lengthInMillis;
-      if (Array.isArray(song[yipIndex])) {
-          midiPitch = song[yipIndex][0];
-          lengthInMillis = song[yipIndex][1];
-      } else {
-          midiPitch = song[yipIndex];
-          lengthInMillis = config.defaultYipSongNoteLength;
-      }
+          var midiPitch;
+          var lengthInMillis;
+          if (Array.isArray(song[yipIndex])) {
+              midiPitch = song[yipIndex][0];
+              lengthInMillis = song[yipIndex][1];
+          } else {
+              midiPitch = song[yipIndex];
+              lengthInMillis = config.defaultYipSongNoteLength;
+          }
 
-      a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
-      yips.push([a, lengthInMillis]);
+          var value = Math.pow(2, (1+((midiPitch-70)/12)));
+          a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
+          yips.push([a, lengthInMillis]);
+        }
+        
+        setTimeout(playSongInner, Math.min(Math.max(yips[0][1], 100), 100), yips, 0);
+    } catch (err) {
+        state.isSinging = false;
+        throw err;
     }
-    
-    setTimeout(playSongInner, Math.min(Math.max(yips[0][1], 100), 100), yips, 0);
 }
 
 var stopSong = false;
 
 function playSongInner(song, index) {  
-  var a = song[index][0];
-  var lengthInMillis = song[index][1];
-  while(lengthInMillis == 0 && index < song.length-2) {
-    a.play();
-    index += 1;
-    a = song[index][0];
-    lengthInMillis = song[index][1];
-  }
-  
-  animate_yip();
-  a.play();
-  
-  if (index < song.length-1 && !stopSong) {
-    setTimeout(playSongInner, lengthInMillis, song, index+1); 
-  } else {
-    state.isSinging = false;
-  }
+    try {
+      var a = song[index][0];
+      var lengthInMillis = song[index][1];
+      while(lengthInMillis == 0 && index < song.length-2) {
+        a.play();
+        index += 1;
+        a = song[index][0];
+        lengthInMillis = song[index][1];
+      }
+      
+      animate_yip();
+      a.play();
+      
+      if (index < song.length-1 && !stopSong) {
+        setTimeout(playSongInner, lengthInMillis, song, index+1); 
+      } else {
+        state.isSinging = false;
+      }
+    } catch (err) {
+      state.isSinging = false;
+      throw err;
+    }
 }
 
 function cheer_yip(channel, context, msg, self) {
