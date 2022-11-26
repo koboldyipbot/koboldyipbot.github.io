@@ -258,19 +258,8 @@ function angelYip() {
     var line8 = [
         [59, 0], [62, 0], [63, half], [58, 0], [63, eighth+sixteenth], [60, 0], [63, eighth+sixteenth], [62, 0], [63, eighth+sixteenth], 
     ]
-
-    var whole = 2000;
-    var half = whole/2;
-    var quarter = half/2;
-    var eighth = quarter/2;
-    var sixteenth = eighth/2;
-    var line5 = [
-        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [63, 0], [67, eighth], [58, 0], [62, 0], [65, eighth+sixteenth], [63, eighth+sixteenth], [65, eighth],
-    ];
-
-    playSong(line1.concat(line2).concat(line3).concat(line4));
-
-    playSong(first.concat(second));
+    
+    playSong(line1.concat(line2).concat(line3).concat(line4).concat(line5).concat(line6).concat(line7).concat(line8));
 }
 
 function detokenizeYipSong(song) {
