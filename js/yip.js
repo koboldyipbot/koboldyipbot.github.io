@@ -1,4 +1,8 @@
 var baseYip = new Audio("sounds/yip.mp3");
+var c3Yip = new Audio("sounds/yip2.mp3");
+var c4Yip = new Audio("sounds/yipc4.mp3");
+
+var forceC3Yip = false;
 
 function fetchUserYips(user) {
   if (!(user in state.userYips)) {
@@ -184,13 +188,6 @@ function angelYip() {
         [58, 0], [70, eighth], [58, 0], [70, eighth], [55, 0], [67, eighth], [58, 0], [70, eighth], [58, 0], [70, eighth+sixteenth], [60, 0], [72, quarter+sixteenth+quarter], 
     ];
 
-    /*
-                                                                        x  x                                            x
-                                                                        51 53 55 56 58 60 62 63 65 67 68 70 72 74 75 77 79
-                                                                        eb f  g  ab bb c  d  eb f  g  ab bb c  d  eb f  g
-    */
-    
-
     var line3 = [
         [63, eighth], [58, sixteenth], [58, quarter+eighth+sixteenth], [63, eighth], 
         [58, 0], [63, eighth+sixteenth], [65, eighth+sixteenth], [58, eighth], [58, quarter+eighth], [63, sixteenth], [65, sixteenth], 
@@ -207,6 +204,60 @@ function angelYip() {
         [58, 0], [63, eighth+sixteenth], [65, eighth+sixteenth], [58, eighth], [58, quarter+eighth], [63, sixteenth], [65, sixteenth],
     ];
 
+    var line5 = [
+        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [60, 0], [67, eighth], [58, 0], [62, 0], [65, eighth+sixteenth], [58, 0], [60, 0], [63, eighth+sixteenth], [58, 0], [62, 0], [65, eighth], 
+        [60, 0], [63, 0], [67, eighth+sixteenth], [60, 0], [63, 0], [68, eighth+sixteenth], [60, 0], [63, 0], [67, eighth], [60, quarter+eighth], [60, sixteenth], [62, sixteenth], 
+        [53, 0], [58, 0], [63, eighth+sixteenth], [53, 0], [58, 0], [63, eighth+sixteenth], [53, 0], [58, 0], [62, eighth], [53, 0], [58, 0], [62, quarter+eighth], [63, sixteenth], [65, sixteenth],
+        [58, 0], [63, 0], [68, eighth+sixteenth], [58, 0], [63, 0], [67, eighth+sixteenth], [58, 0], [62, 0], [62, eighth], [63, quarter+eighth], [67, eighth],
+        [57, 0], [62, 0], [67, eighth+sixteenth], [57, 0], [62, 0], [65, eighth+sixteenth], [57, 0], [64, eighth], [57, 0], [62, 0], [65, eighth+sixteenth], [67, eighth+sixteenth], [68, eighth]
+    ];
+
+    var line6 = [
+        []
+    ];
+
+       
+
+    var line6 = [
+        [55, 0], [59, 0], [62, 0], [67, quarter], [50, 0], [55, 0], [59, quarter], [50, 0], [55, 0], [60, quarter], [50, 0], [55, 0], [62, quarter],
+        [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [58, 0], [62, eighth], [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [58, 0], [62, eighth], 
+        [58, 0], [62, 0], [65, eighth+sixteenth], [58, 0], [62, 0], [65, eighth+sixteenth], [58, 0], [60, 0], [63, eighth], [55, 0], [62, eighth+sixteenth], [60, eighth+sixteenth], [62, eighth],
+        [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [58, 0], [62, eighth], [58, 0], [62, 0], [65, eighth+sixteenth], [62, eighth+sixteenth], [60, eighth],
+    ];
+
+    /*
+                                                                        x  x                                            x
+                                                                        51 53 55 56 58 60 62 63 65 67 68 70 72 74 75 77 79
+                                                                        eb f  g  ab bb c  d  eb f  g  ab bb c  d  eb f  g
+    */
+
+    /*
+
+        -  68
+           67
+        -- 65
+           63
+        -- 62
+           60
+        -- 58
+           56
+        -- 55
+           53
+        -- 51
+           50
+        -  48
+    */
+
+    var line7 = [
+        [49, 0], [53, 0], [58, quarter], [55, quarter], [56, quarter], [58, quarter],
+        [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [58, 0], [62, eighth], [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [60, 0], [63, eighth+sixteenth], [56, 0], [58, 0], [62, eighth], 
+        [58, 0], [62, 0], [65, eighth+sixteenth], [58, 0], [62, 0], [65, eighth+sixteenth], [58, 0], [60, 0], [63, eighth], [55, 0], [62, eighth+sixteenth], [63, eighth+sixteenth], [65, eighth],
+        [62, 0], [67, eighth+sixteenth], [62, 0], [65, eighth+sixteenth], [62, 0], [64, eighth], [62, 0], [65, eighth+sixteenth], [62, 0], [67, eighth+sixteenth], [68, eighth]
+    ];
+
+    var line8 = [
+        [59, 0], [62, 0], [63, half], [58, 0], [63, eighth+sixteenth], [60, 0], [63, eighth+sixteenth], [62, 0], [63, eighth+sixteenth], 
+    ]
 
     var whole = 2000;
     var half = whole/2;
@@ -253,6 +304,46 @@ function detokenizeYipSong(song) {
     return song;
 }
 
+function setupBaseYipAudio(midiPitch) {
+    var a = baseYip.cloneNode(true);
+    a.volume = .05;
+    a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
+    a.mozPreservesPitch = false;
+    a.webkitPreservesPitch = false;
+    a.preservesPitch = false;
+    return a;
+}
+
+function setupC4YipAudio(midiPitch) {
+    var a = c3Yip.cloneNode(true);
+    a.volume = .3;
+    a.playbackRate = Math.pow(2, (1+((midiPitch-71+11.5)/12)));
+    a.mozPreservesPitch = false;
+    a.webkitPreservesPitch = false;
+    a.preservesPitch = false;
+    return a;
+}
+
+function setupC3YipAudio(midiPitch) {
+    var a = c3Yip.cloneNode(true);
+    a.volume = .6;
+    a.playbackRate = Math.pow(2, (1+((midiPitch-71+12*2)/12)));
+    a.mozPreservesPitch = false;
+    a.webkitPreservesPitch = false;
+    a.preservesPitch = false;
+    return a;
+}
+
+function setupSongAudio(midiPitch) {
+    var a;
+    if (midiPitch < 54) {
+        a = setupC4YipAudio(midiPitch);
+    } else {
+        a = setupBaseYipAudio(midiPitch);
+    }
+    return a;
+}
+
 function playSong(song, forceSong) {
     if (forceSong === undefined && state.isSinging) {
         console.log(":(")
@@ -264,14 +355,6 @@ function playSong(song, forceSong) {
     try {
         var yips = [];
         for (var yipIndex in song) {
-            // if (yipIndex > 2) { break; }
-          var a = baseYip.cloneNode(true);
-          a.mozPreservesPitch = false;
-          a.webkitPreservesPitch = false;
-          a.preservesPitch = false;
-
-          a.volume = 0.05;
-
           var midiPitch;
           var lengthInMillis;
           if (Array.isArray(song[yipIndex])) {
@@ -281,13 +364,11 @@ function playSong(song, forceSong) {
               midiPitch = song[yipIndex];
               lengthInMillis = config.defaultYipSongNoteLength;
           }
-
-          var value = Math.pow(2, (1+((midiPitch-70)/12)));
-          a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
+          var a = setupSongAudio(midiPitch);
           yips.push([a, lengthInMillis]);
         }
         
-        setTimeout(playSongInner, Math.min(Math.max(yips[0][1], 100), 100), yips, 0);
+        setTimeout(playSongInner, yips[0][1], yips, 0);
     } catch (err) {
         state.isSinging = false;
         throw err;
