@@ -81,14 +81,14 @@ function onMessageHandler (channel, context, msg, self) {
         yipShanty2Yip();
       } else if (song === "blinded") {
         blindedYip();
-      } else if (song === "angel") {
+      } else if (song === "angel" && isMod) {
         angelYip();
       } else if (song === "custom") {
-        if (commandArr.length > 18 && !isMod) {
+        var songString = commandArr.slice(2).join(" ");
+        var song = detokenizeYipSong(songString);
+        if (song.length > 16 && !isMod) {
           client.say(channel, "Only 16 notes max!");
         } else {
-          var songString = commandArr.slice(2).join(" ");
-          var song = detokenizeYipSong(songString);
           var valid = true;
           if (song) {
             playSong(song);
@@ -140,7 +140,9 @@ function onMessageHandler (channel, context, msg, self) {
       hello();
     }
   } else if (commandArr[0] === "!artist") {
-    client.say(channel, "The current vtuber artist today is @WilcoWeb!");
+    client.say(channel, "The current vtuber artist today is @ModernModron!");
+  } else if (commandArr[0] === "!server") {
+    client.say(channel, "HEY @kobold_wyx WHAT'S THE SERVER INFO????");
   } else if (commandArr[0] === "!raffle") {
     var isMod = config.mods.includes(user);
     var cmd = commandArr[1];
@@ -191,5 +193,6 @@ function onConnectedHandler (addr, port) {
 }
 
 $.when( $.ready ).then(function() {
-    $(document).click(yip);
+    // $(document).click(yip);
+
 });
