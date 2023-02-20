@@ -54,7 +54,7 @@ function raffleDo() {
 function raffleQueryCommand(client, channel, user) {
 	var count = raffleGetEntryCount(user);
 	var entry = count == 1 ? "entry" : "entries";
-	client.say(channel, "@" + user + ": You have " + count + " " + entry + " in the raffle!");
+	client.say(channel, "@" + user + ": You have " + count + " " + entry + " in the raffle to win a wyx sticker!");
 }
 
 function raffleAdminQueryCommand(client, channel, user) {

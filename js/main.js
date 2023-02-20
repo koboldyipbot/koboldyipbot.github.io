@@ -22,12 +22,15 @@ client.on('cheer', cheer_yip);
 // Connect to Twitch:
 client.connect();
 
+// var websocket = new WebSocket('wss://pubsub-edge.twitch.tv')
+
 function poll_channel_points() {
 
 }
 
 function postLink() {
-  client.say("kobold_wyx", "https://youtu.be/2vrAc_c9RRI");
+  // client.say("kobold_wyx", "https://youtu.be/2vrAc_c9RRI");
+  client.say(channel, "type !raffle to join to win a wyx sticker! drawing will happen March 26th!  you can gain one entry per stream, OR gain an extra entry by emailing a photo of your dono and your username to wyx [[at]] koboldinteractive [[dot]] com ! https://twitter.com/kobold_wyx/status/1623493284143448064");
   setTimeout(postLink, 600000);
 }
 
@@ -51,7 +54,7 @@ function onMessageHandler (channel, context, msg, self) {
   // console.log(msg);
   var user = context["display-name"];
   updateYips(user);
-  raffleAddEntryToday(user);
+  // raffleAddEntryToday(user);
 
   if (!msg.startsWith('!')) { return; }
 
@@ -63,7 +66,9 @@ function onMessageHandler (channel, context, msg, self) {
   var commandArr = command.split(/\s+/);
   var isMod = config.mods.includes(user);
 
-  if (commandArr[0] === "!yiphelp") {
+  var cmd1 = commandArr[0].toLowerCase();
+
+  if (cmd1 === "!yiphelp") {
     doHelp(channel, context);
   } else if (commandArr[0] === "!yipsong") {
       var song = commandArr[1];
@@ -97,12 +102,16 @@ function onMessageHandler (channel, context, msg, self) {
           }
         }
       } else {
-        client.say(channel, "Current songs: custom, mario, girl, charge, sans, yakety, yipshanty2");
+        client.say(channel, "Current songs: custom, mario, girl, charge, sans, yakety, yipshanty2, blinded");
       }
-  } else if (commandArr[0] === '!yip') {
+  } else if (cmd1 === '!yip') {
 
     var args = command.split(/ +/, 4);
-    if (args[1] === "give" && config.mods.includes(user)) {
+    console.log(args);
+    if (args.length == 1) {
+      doHelp(channel, context);
+      return;
+    } else if (args[1].toLowerCase() === "give" && config.mods.includes(user)) {
       var user = args[2];
       var yips = parseInt(args[3]);
 
@@ -111,7 +120,7 @@ function onMessageHandler (channel, context, msg, self) {
     } else {
       var yips = parseInt(args[1]);
       var msPerYip = parseInt(args[2]);
-      if ((isNaN(yips) || isNaN(msPerYip)) && !state.helpInCooldown) {
+      if (((isNaN(yips) || isNaN(msPerYip))) && !state.helpInCooldown) {
         doHelp(channel, context);
         return;
       }
@@ -131,7 +140,7 @@ function onMessageHandler (channel, context, msg, self) {
       yip(yips, msPerYip);
       updateYips(user, -yips);
     }
-  } else if (commandArr[0] === "!hello") {
+  } else if (cmd1 === "!hello") {
     if (isMod && command.slice(7, 10) === "off") {
       state.helloEnabled = false;
     } else if (isMod && command.slice(7, 10) === "on") {
@@ -139,42 +148,49 @@ function onMessageHandler (channel, context, msg, self) {
     } else if (state.helloEnabled || isMod) {
       hello();
     }
-  } else if (commandArr[0] === "!artist") {
-    client.say(channel, "The current vtuber artist today is @ModernModron!");
-  } else if (commandArr[0] === "!server") {
-    client.say(channel, "HEY @kobold_wyx WHAT'S THE SERVER INFO????");
-  } else if (commandArr[0] === "!raffle") {
+  } else if (cmd1 === "!artist") {
+    client.say(channel, "The current vtuber artist today is @WilcoWeb!");
+  } else if (cmd1 === "!music") {
+    client.say(channel, "Intro music: https://www.youtube.com/watch?v=Qt0-9mO-ZXY")
+  } else if (cmd1 === "!discord") {
+    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/Yp9nFxgWjT");
+  } else if (cmd1 === "!charity") {
+    client.say(channel, "wyx is donating 100% of their bits and subs through and including March 26th, when they're going to have an all-day stream to support the Lavender Clinic! https://twitter.com/kobold_wyx/status/1626013906295721984");
+  } else if (cmd1 === "!raffle") {
     var isMod = config.mods.includes(user);
-    var cmd = commandArr[1];
+    var cmd2 = commandArr[1] ? commandArr[1].toLowerCase() : null;
     if (isMod) {
       // meta commands
-      if (cmd === "enable") {
+      if (cmd2 === "enable") {
         raffleSetIsEnabled(true);
-      } else if (cmd === "disable") {
+      } else if (cmd2 === "disable") {
         raffleSetIsEnabled(false);
-      } else if (cmd === "raffleOn") {
+      } else if (cmd2 === "raffleOn") {
         raffleSetAcceptEntries(true);
-      } else if (cmd === "raffleOff") {
+      } else if (cmd2 === "raffleOff") {
         raffleSetAcceptEntries(false);
       }
       // commands
       else if (raffleIsEnabled) {
-        if (cmd === "draw") {
+        if (cmd2 === "draw") {
           raffleDrawCommand(client, channel);
-        } else if (cmd === "add" && commandArr[2] && commandArr[3]) {
+        } else if (cmd2 === "add" && commandArr[2] && commandArr[3]) {
           var day = commandArr[2];
           var user = commandArr[3];
           raffleAddEntry(day, user);
-        } else if (cmd === "clear") {
+        } else if (cmd2 === "clear") {
           raffleClearEntries();
-        } else if (cmd === "checkEntries") {
+        } else if (cmd2 === "checkEntries") {
           var user = commandArr[2];
           raffleAdminQueryCommand(client, channel, user);
-        } else if (cmd === "debug") {
+        } else if (cmd2 === "debug") {
           raffleDebug(client, channel);
+        } else {
+          client.say(channel, "type !raffle to join to win a wyx sticker! drawing will happen March 26th!  you can gain one entry per stream, OR gain an extra entry by emailing a photo of your dono and your username to wyx [[at]] koboldinteractive [[dot]] com ! https://twitter.com/kobold_wyx/status/1623493284143448064");
         }
       }
     } else if (raffleIsEnabled) {
+      raffleAddEntryToday(user);
       raffleQueryCommand(client, channel, user);
     }
   }
@@ -189,10 +205,14 @@ function onMessageHandler (channel, context, msg, self) {
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
-  // postLink();
+  setTimeout(postLink, 600000);
 }
 
 $.when( $.ready ).then(function() {
-    // $(document).click(yip);
-
+    $(document).click(yip);
 });
+
+// websocket.onmessage = (event) => {
+
+//   client.say(event.data);
+// }

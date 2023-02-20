@@ -407,7 +407,7 @@ function playSong(song, forceSong) {
 
 var stopSong = false;
 
-function playSongInner(song, index) {
+function playSongInner(song, index, finishFunc) {
     // try {
   var a = song[index][0];
   var lengthInMillis = song[index][1];
@@ -452,6 +452,10 @@ function playSongInner(song, index) {
   } else {
     state.isSinging = false;
     stopSong = false;
+
+    if (finishFunc) {
+        finishFunc();
+    }
   }
     // if (i == 1) {
     //   animate_yip();
