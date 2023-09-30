@@ -7,11 +7,11 @@ const config = {
     image1: "images/yip1.png",
     image2: "images/yip2.png",
     twitchUsername: "yip_bot",
-    twitchOAuthPassword: "oauth:75bj7q99vn5niquipnlfyumjei48tn", // Official OAuth token generator: https://twitchapps.com/tmi/
+    twitchOAuthPassword: "", // Official OAuth token generator: https://twitchapps.com/tmi/
     twitchChannelPoints: {
-        username: "kobold_wyx",
-        clientID: "34njj6we18nbb8ml4si3q8ux7eqa6m",
-        clientSecret: "4q2krbo2s6opxe7goumwzadozrgp6m"
+        username: "",
+        clientID: "",
+        clientSecret: ""
     },
     twitchChannels: [
         "kobold_wyx"

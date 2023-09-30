@@ -197,15 +197,19 @@ function onMessageHandler (channel, context, msg, self) {
   } else if (cmd1 === "!artist") {
     client.say(channel, "The current vtuber artist today is @ovaettr!");
   } else if (cmd1 === "!music") {
-    client.say(channel, "https://wyx.gay/music");
+    client.say(channel, "Intro music by @kobold_wyx - https://wyx.gay/music");
   } else if (cmd1 === "!discord") {
     client.say(channel, "Join the Kobold Town Discord! https://discord.gg/tRVWK8Xp");
   } else if (cmd1 === "!forum") {
     client.say(channel, "Join the Kobold Town Forum! https://kobold.town");
   } else if (cmd1 === "!charity") {
-    // client.say(channel, "wyx is donating 100% of their bits and subs through and including March 26th, when they're going to have an all-day stream to support the Lavender Clinic! see https://wyx.gay");
+    // client.say(channel, "wyx is donating 100% of their bits and subs through and including October 31st to support the Armenian refugee relief effort! see https://wyx.gay for details!");
   } else if (cmd1 === "!workshop") {
-    client.say(channel, "wyx is holding a ttrpg workshop for their custom game on Saturday 9/23, 10am-12pm pacific! https://forums.kobold.town/t/next-workshop-sept-23rd-10am-pacific/110/3");
+    // client.say(channel, "wyx is holding a ttrpg workshop for their custom game on Saturday 9/23, 10am-12pm pacific! https://forums.kobold.town/t/next-workshop-sept-23rd-10am-pacific/110/3");
+  } else if (cmd1 === "!discord") {
+    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/BzD9GyKF");
+  } else if (cmd1 === "!charity") {
+    // client.say(channel, "wyx is donating 100% of their bits and subs through and including March 26th, when they're going to have an all-day stream to support the Lavender Clinic! see https://wyx.gay");
   } else if (cmd1 === "!raffle") {
     var isMod = config.mods.includes(user);
     var cmd2 = commandArr[1] ? commandArr[1].toLowerCase() : null;
@@ -259,7 +263,7 @@ function onMessageHandler (channel, context, msg, self) {
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
   // postWorkshop();
-  // postStartYips();
+  postStartYips();
   // setTimeout(postLink, 900000);
 }
 
