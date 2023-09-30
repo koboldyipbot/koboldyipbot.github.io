@@ -299,6 +299,57 @@ function angelYip() {
 
 }
 
+function koboldTownYip() {
+    // https://jummbus.bitbucket.io/#j5N0dKobold%20Townn520s6k0l00e03t1Ua7g03j0ar1O_U00000000000000i0o43534T5v0sud3f173q050Oa0d230HVxh90000000000h0E0T5v0hu42f0000qwB16110Oa0d030H_RBHBziiii9998h0E1b7T0v0gu86f0000q0B1900Oa0d350w6h3E1b9T5v0aua1f062ge2ec2f02j01960me00q8740Oa7ld380HT-Iqijriiiih99h0E0T5v0jud2f163q8720Oa70d230HU0000000000000h0E0T4v0guf0f1a0q050Oa0z6666ji8k8k3jSBKSJJAArriiiiii07JCABrzrrrrrrr00YrkqHrsrrrrjr005zrAqzrjzrrqr1jRjrqGGrrzsrsA099ijrABJJJIAzrrtirqrqjqixzsrAjrqjiqaqqysttAJqjikikrizrHtBJJAzArzrIsRCITKSS099ijrAJS____Qg99habbCAYrDzh00E0T4v0eu04f010w400qw02c0z777777777777S-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiii-JIAArrrrrqiiiiE0b4zgi4N8j4xci4N4i000p2cTFAu09B-5Od38U30RGl79AukQ61V6xAIzlGlqei8Y1Q6iOtfaV39p6NAifbq38VixwmhEQqZtcRZaCbKxp4myb02QiCAbh5F2M8I2kQhq8I2b02U4kQhqgJcmybhaq0JgmGbh5EBdomKbExqgJ4mAbh5F2QhqgJ4mAbj5F2QxqgJgmybx1jmaqhj9yRNkPFZsmmnUpD39B-zhOkpp2zAoOj8Za1V4zp6MFp2cIziOcpraBOAiJIqSjBf8QYzeuOHtOInat2ziFSCbEriCaqsFPd6yyDcFE3xraqp7b9jkBmFj13FcFjEFWSaqGtRzhHORkFINFgQqespd7t-zQkQVjCqd2sVBd2at35w4vb6XIoNskQVjCqd2sVBd2ea6boNz1yQVPCkyOO_3cUpcLQqeizb8ksz6ip7Fgf8Ar8S5b8hBAqmhzbpkKkylJzmOsFV6DApPSlo0FAua17cV71At8zF4t8zF4ta1N48VA8Wp7i8Wh7i8Wh7iFqwzwOe38Wh7i8Wh7i8Wk3opHXfQOFQ8QFRzeDS_dvrYMxxGTCzGVjGVEWKsvElBdjfhZ1Ebjdv63FdCkAGcZeqj9jLpwFB--fb-WjOdcn9yMoI31POeCb0yRaAYzG2QxqliCfJG52xgEiB2xgEka52xgEk9qxgEka02ChyWx8kq52LhEkal6xgFkt1gFkq52BhEka52waCa4q0KgQhBM1BQjbEQqd40FAo0kGd8WuziEQFvhFkqhvhFkqhHWaBhF5Z6BgEBZ2zhFq8zEkGd8LEQGd8LEQJ5iEQGdaziEQGdaxhEkt0hQ2eyhQ2eAhQ3wM0
+
+    /* 200 bpm, 1200 ms per bar */
+  var w = 1200;
+  var h = w/2;
+  var q = h/2;
+  var e = q/2;
+  var s = e/2;
+
+  var line1 = [
+        [61, e], [68, q], [61, e], [61, e], [68, q], [70, e], [73, e], [72, e], [70, e], [72, e], [68, q], [61, e]
+    ];
+  var line2 = [
+        [61, e], [65, q], [61, e], [61, e], [68, q], [61, e], [73, e], [72, e], [70, e], [72, e], [73, q], [75, e]
+    ];
+  var line3 = [
+        [75, e], [72, q], [70, e], [73, e], [68, q], [68, e], [70, q], [68, e], [67, e], [68, q+e], [61, e]
+    ];
+  var line4 = [
+        [61, e], [68, q], [73, e], [73, e], [77, q], [73, e], [77, e], [73, e], [75, e], [72, e], [73, 2*q]
+    ];
+    /*
+                                  x  x  x                                            
+                                  48 49 51 53 55 56 58 60 61 63 65 67 68 70 72 73 75 77
+                                  c  db eb f  g  ab bb c  db eb f  g  ab bb c  db eb f
+    */
+
+    /*
+
+        -  72
+           70
+        -  68
+           67
+        -- 65
+           63
+        -- 62
+           60
+        -- 58
+           56
+        -- 55
+           53
+        -- 51
+           50
+        -  48
+    */
+
+  playSong(line1.concat(line2).concat(line3).concat(line4));
+
+}
+
 function detokenizeYipSong(song) {
     // return null if invalid song
   var splitted = song.replaceAll('[', '[ ').replaceAll(']', ' ]').replaceAll(",", "").split(/\s+/);
@@ -333,7 +384,7 @@ function detokenizeYipSong(song) {
 function setupBaseYipAudio(midiPitch) {
   var a = baseYip.cloneNode(true);
   a.load();
-  a.volume = .05;
+  a.volume = .1;
   a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
   a.mozPreservesPitch = false;
   a.webkitPreservesPitch = false;
@@ -397,7 +448,7 @@ function playSong(song, forceSong) {
     yips.push([a, lengthInMillis]);
   }
 
-  setTimeout(playSongInner, 500, yips, 0);
+  setTimeout(playSongInner, 500 + song.length * 10, yips, 0);
   // playSongInner(yips, 0);
     // } catch (err) {
     //     state.isSinging = false;
