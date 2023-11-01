@@ -7,12 +7,8 @@ const config = {
     image1: "images/yip1.png",
     image2: "images/yip2.png",
     twitchUsername: "yip_bot",
-    twitchOAuthPassword: "", // Official OAuth token generator: https://twitchapps.com/tmi/
-    twitchChannelPoints: {
-        username: "",
-        clientID: "",
-        clientSecret: ""
-    },
+    twitchOAuthPassword: secrets.twitchOAuthPassword, // Official OAuth token generator: https://twitchapps.com/tmi/
+    twitchChannelPoints: secrets.twitchChannelPoints,
     twitchChannels: [
         "kobold_wyx"
     ],
