@@ -4,6 +4,7 @@ var c3Yip = new Audio("sounds/yip2.mp3");
 
 var forceC3Yip = false;
 
+
 function createYipSpan() {
   var yipSpan = $('<span class="yip">yip</span>');
   var size = Math.floor(Math.random() * 18) + 6;
@@ -25,7 +26,43 @@ function resetYipSpan(yipSpan) {
   return yipSpan;
 }
 
+function createYipAudio(yipBaseReference) {
+    var a = yipBaseReference.cloneNode(true);
+    a.load();
+    a.volume = .1;
+    // a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12))); -- up to invoker
+    a.mozPreservesPitch = false;
+    a.webkitPreservesPitch = false;
+    a.preservesPitch = false;
+    return a;
+}
+
+function createBaseYipAudio() {
+    return createYipAudio(baseYip);
+}
+
+function createC4YipAudio() {
+    return createYipAudio(c4Yip);
+}
+
+function createC3YipAudio() {
+    return createYipAudio(c3Yip);
+}
+
+function resetYipAudio(yipAudio) {
+    yipAudio.currentTime = 0;
+}
+
+
+function createYipImg() {
+    return createYipAudio(baseYip);
+}
+
 var yipSpanPool = new ObjectPool(createYipSpan, resetYipSpan);
+var yipBaseAudioPool = new ObjectPool(createBaseYipAudio, resetYipAudio);
+var yipC4AudioPool = new ObjectPool(createC4YipAudio, resetYipAudio);
+var yipC3AudioPool = new ObjectPool(createC3YipAudio, resetYipAudio);
+// var yipImgPool = new ObjectPool(createYipImg, resetYipImage);
 
 function fetchUserYips(user) {
   if (!(user in state.userYips)) {
@@ -350,6 +387,89 @@ function koboldTownYip() {
 
 }
 
+function songOfStormsYip() {
+    // https://musescore.com/user/8577956/scores/6110030
+
+    /* 105 bpm, 2285 ms per bar */
+  var w = 1600;
+  var h = w/2;
+  var q = h/2;
+  var e = q/2;
+  var s = e/2;
+
+  var preamble = [
+    [50, q], [57, 0], [53, q], [57, 0], [53, q], 
+    [52, q], [59, 0], [55, h], 
+    [53, q], [60, 0], [57, q], [60, 0], [57, q], 
+    [52, q], [59, 0], [55, h], 
+  ];
+
+  var line1 = [
+        [50, 0], [62, e], [65, e], [74, 0], [57, 0], [53, q], [57, 0], [53, q], 
+        [52, 0], [62, e], [65, e], [74, 0], [59, 0], [55, h], 
+        [76, 0], [53, q], [60, 0], [57, e], [77, e], [60, 0], [76, 0], [57, e], [77, e],
+        [76, 0], [52, e], [72, e], [69, 0], [59, 0], [55, h], 
+        [69, 0], [46, q], [53, 0], [50, e], [62, e], [65, 0], [53, 0], [50, e], [67, 0],
+        [69, 0], [41, q], [48, 0], [45, q], [48, 0], [45, q],
+        [69, 0], [34, q], [62, 0], [41, 0], [38, q], [65, 0], [41, 0], [38, e], [67, e],
+        [64, 0], [60, 0], [33, q], [40, 0], [36, q], [33, q]
+    ];
+  var line2 = [
+    [50, 0], [38, e], [53, e], [62, 0], [65, 0], [62, q], [65, 0], [62, q],
+    [50, 0], [40, e], [53, e], [62, 0], [47, 0], [43, h],
+    [64, 0], [60, 0], [41, q], [48, 0], [45, e], [65, e], [64, 0], [48, 0], [45, e], [65, e],
+    [64, 0], [40, e], [60, e], [57, 0], [47, 0], [43, h],
+    [57, 0], [34, q], [50, 0], [41, 0], [38, q], [53, e], [55, e], 
+    [57, 0], [40, 0], [36, 0], [33, h], [57, q], 
+    [50, 0], [38, q], [45, 0], [41, q], [45, 0], [41, q], 
+    [40, q], [47, 0], [43, h], 
+    [41, q], [48, 0], [45, q], [48, 0], [45, q], 
+    [40, q], [47, 0], [43, h]
+  ];
+  // var line3 = [
+  //       [75, e], [72, q], [70, e], [73, e], [68, q], [68, e], [70, q], [68, e], [67, e], [68, q+e], [61, e]
+  //   ];
+  // var line4 = [
+  //       [61, e], [68, q], [73, e], [73, e], [77, q], [73, e], [77, e], [73, e], [75, e], [72, e], [73, 2*q]
+  //   ];
+    /*
+                                  x  x  x                                            
+                                  48 50 52 53 55 57 58 60 62 64 65 67 69 70 72 74 76 77
+                                  c  d  e  f  g  a  bb c  d  e  f  g  a  bb c  d  e  f
+    */
+
+    /*
+
+           77
+        -  76 / 
+           74
+        -  72
+           70
+        -  69 / 48
+           67 / 46
+        -- 65 / 45
+           64 / 43
+        -- 62 / 41
+           60 / 40
+        -- 58 / 38
+           57 / 36
+        -- 55 / 34
+           53 / 33
+        -- 52 / 31
+           50
+        -  48
+           46
+        -  45
+           43
+        -  41
+
+    */
+
+  playSong(preamble.concat(line1).concat(line2)); // .concat(line2).concat(line3).concat(line4));
+
+}
+
+
 function detokenizeYipSong(song) {
     // return null if invalid song
   var splitted = song.replaceAll('[', '[ ').replaceAll(']', ' ]').replaceAll(",", "").split(/\s+/);
@@ -536,8 +656,14 @@ function cheer_yip(channel, context, msg, self) {
 }
 
 
-
 function animate_yip() {
+    static_animate_yip();
+}
+
+
+function hiding_animate_yip() {
+  
+
   var spanElement = yipSpanPool.getElement();
   var span = spanElement.data;
   $("#yip_box").append(span);
@@ -591,6 +717,63 @@ function animate_yip() {
 
     $("#yip").attr("src", config.image2);
     setTimeout(reset_yip, config.minimumYipGapMilliseconds);
+  }
+}
+
+function static_animate_yip() {
+  var spanElement = yipSpanPool.getElement();
+  var span = spanElement.data;
+  $("#yip_box").append(span);
+  last_anim = span;
+
+  var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+  var target_x = Math.floor(width * (Math.random() * 2.4 - 1.6));
+  var target_y = Math.floor(-height);
+
+  var dir = Math.random() > 0.5 ? -1 : 1;
+
+  var iters = 10;
+  var wiggle_multiplier = 0.1;
+  var animation_time = 400;
+
+  for (var i = 1 ; i <= iters; i++) {
+    var next_x_line = i * target_x / iters;
+    var next_x_wiggle = wiggle_multiplier * width * dir;
+    var next_y_line = i * target_y / iters + config.yipOffsetTop;
+
+    var doneFunc = function(){};
+    if (i === iters) {
+      doneFunc = function () {
+        span.remove();
+        yipSpanPool.releaseElement(spanElement);
+      };
+    }
+
+    last_anim = last_anim.animate(
+    {
+      left: Math.floor(config.yipOffsetLeft + next_x_line + next_x_wiggle),
+      top: Math.floor(config.yipOffsetTop + next_y_line)
+    },
+    {
+      duration: animation_time,
+      specialEasing: {
+        left: "swing",
+        top: "linear"
+      },
+      done: doneFunc
+    }
+    );
+    dir = dir * -1;
+  }
+  var nextDate = new Date();
+  if (!state.isYipping) { // && getMillisecondsDiff(state.lastYipDate, nextDate) > config.minimumYipGapMilliseconds * 2) {
+    state.isYipping = true;
+    state.lastYipDate = nextDate;
+
+    $("#yip").attr("src", config.image2);
+    setTimeout(reset_yip, 50); // config.minimumYipGapMilliseconds);
   }
 }
 

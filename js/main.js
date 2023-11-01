@@ -50,7 +50,7 @@ function postLink() {
   // client.say("kobold_wyx", "https://youtu.be/2vrAc_c9RRI");
   for (var i = 0; i < opts.channels.length; i++) {
     let channel = opts.channels[i];
-    client.say(channel, "type !raffle to join to win one of 10 wyx stickers or the grand prize of an animation by @ovaettr! drawing at 5:30pm PST! gain an extra entry by emailing a photo of your dono to the lavender clinic (https://www.lavenderclinic.org/support/donate) and your twitch username to wyx [[@]] koboldinteractive [[.]] com ! https://wyx.gay");
+    client.say(channel, "type !raffle to win art by @ovaettr! drawing at 7:30pm PST! you can gain an extra entry, check !charity for details!");
   }
   setTimeout(postLink, 900000);
 }
@@ -131,7 +131,9 @@ function onMessageHandler (channel, context, msg, self) {
       } else if (song === "angel" && isMod) {
         angelYip();
       } else if (song === "koboldtown") {
-        koboldTownYip()
+        koboldTownYip();
+      } else if (song === "zeldastorms") {
+        songOfStormsYip();
       } else if (song === "custom") {
         var songString = commandArr.slice(2).join(" ");
         var song = detokenizeYipSong(songString);
@@ -146,7 +148,7 @@ function onMessageHandler (channel, context, msg, self) {
           }
         }
       } else {
-        client.say(channel, "Current songs: custom, mario, girl, charge, sans, yakety, yipshanty2, blinded, koboldtown");
+        client.say(channel, "Current songs: custom, mario, girl, charge, sans, yakety, yipshanty2, blinded, koboldtown, zeldastorms");
       }
   } else if (cmd1 === '!yip') {
 
@@ -192,6 +194,8 @@ function onMessageHandler (channel, context, msg, self) {
     } else if (state.helloEnabled || isMod) {
       hello();
     }
+  } else if (cmd1 === "!help") {
+    client.say(channel, "Full command list here: https://wyx.gay/yipbot");
   } else if (cmd1 === "!raid") {
     // client.say(channel, "Today we're gonna raid @ultchimi!!!! be sure to yip at him!!!!");
   } else if (cmd1 === "!artist") {
@@ -199,15 +203,13 @@ function onMessageHandler (channel, context, msg, self) {
   } else if (cmd1 === "!music") {
     client.say(channel, "Intro music by @kobold_wyx - https://wyx.gay/music");
   } else if (cmd1 === "!discord") {
-    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/tRVWK8Xp");
+    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/6p9tnEQP");
   } else if (cmd1 === "!forum") {
     client.say(channel, "Join the Kobold Town Forum! https://kobold.town");
   } else if (cmd1 === "!charity") {
-    // client.say(channel, "wyx is donating 100% of their bits and subs through and including October 31st to support the Armenian refugee relief effort! see https://wyx.gay for details!");
+    client.say(channel, "wyx is donating $5 to the Palestinian Children's Relief Fund for every time they eat a child!  If you donate at least $1 and send a receipt to wyx@koboldinteractive.com, you'll gain an extra !raffle entry!");
   } else if (cmd1 === "!workshop") {
     // client.say(channel, "wyx is holding a ttrpg workshop for their custom game on Saturday 9/23, 10am-12pm pacific! https://forums.kobold.town/t/next-workshop-sept-23rd-10am-pacific/110/3");
-  } else if (cmd1 === "!discord") {
-    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/BzD9GyKF");
   } else if (cmd1 === "!charity") {
     // client.say(channel, "wyx is donating 100% of their bits and subs through and including March 26th, when they're going to have an all-day stream to support the Lavender Clinic! see https://wyx.gay");
   } else if (cmd1 === "!raffle") {
@@ -242,7 +244,7 @@ function onMessageHandler (channel, context, msg, self) {
         } else if (cmd2 === "debug") {
           raffleDebug(client, channel);
         } else {
-          client.say(channel, "type !raffle to join to win one of 10 wyx stickers or the grand prize of an animation by @ovaettr! drawing at 5:30pm PST! gain an extra entry by emailing a photo of your dono to the lavender clinic (https://www.lavenderclinic.org/support/donate) and your twitch username to wyx [[@]] koboldinteractive [[.]] com ! https://wyx.gay");
+          client.say(channel, "type !raffle to join to win art by @ovaettr! drawing at 7:30pm PST! gain an extra entry by emailing a photo of your minimum $1 dono to the PCRF (https://pcrf1.app.neoncrm.com/forms/gaza-relief) and your twitch username to wyx@koboldinteractive.com !");
             // "  you can gain one entry per stream, OR gain an extra entry by emailing a photo of your dono and your username to wyx [[at]] koboldinteractive [[dot]] com ! https://twitter.com/kobold_wyx/status/1623493284143448064");
         }
       }
@@ -263,8 +265,8 @@ function onMessageHandler (channel, context, msg, self) {
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
   // postWorkshop();
-  postStartYips();
-  // setTimeout(postLink, 900000);
+  setTimeout(postStartYips, 1000);
+  setTimeout(postLink, 900000);
 }
 
 $.when( $.ready ).then(function() {
