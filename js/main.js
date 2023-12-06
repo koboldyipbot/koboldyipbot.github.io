@@ -40,9 +40,11 @@ function postStartYips() {
   // client.say("kobold_wyx", "https://youtu.be/2vrAc_c9RRI");
   for (var i = 0; i < opts.channels.length; i++) {
     let channel = opts.channels[i];
-    client.say(channel, "!yip 10000 10000");
-    client.say(channel, "!yip 13333 13333");
+    // client.say(channel, "!yip 10000 10000");
+    // client.say(channel, "!yip 13333 13333");
   }
+  yip(10000, 10000);
+  yip(13333, 13333);
   // setTimeout(StartYips, 900000);
 }
 
@@ -177,9 +179,9 @@ function onMessageHandler (channel, context, msg, self) {
       }
 
       var userYips = fetchUserYips(user);
-      if (userYips.yips <= 0) {
+      if (userYips.yips + userYips.bonusYips - yips < 0) {
         var user = context["display-name"];
-        client.say(channel, "@" + user + ": You only have " + userYips.yips + " yips!");
+        client.say(channel, "@" + user + ": You only have " + (userYips.yips + userYips.bonusYips) + " yips!");
         return;
       }
       
@@ -203,7 +205,7 @@ function onMessageHandler (channel, context, msg, self) {
   } else if (cmd1 === "!music") {
     client.say(channel, "Intro music by @kobold_wyx - https://wyx.gay/music");
   } else if (cmd1 === "!discord") {
-    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/6p9tnEQP");
+    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/Ca6SAwVA");
   } else if (cmd1 === "!forum") {
     client.say(channel, "Join the Kobold Town Forum! https://kobold.town");
   } else if (cmd1 === "!charity") {
@@ -266,7 +268,7 @@ function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
   // postWorkshop();
   setTimeout(postStartYips, 1000);
-  setTimeout(postLink, 900000);
+  // setTimeout(postLink, 900000);
 }
 
 $.when( $.ready ).then(function() {

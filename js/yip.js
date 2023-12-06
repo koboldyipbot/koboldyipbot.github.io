@@ -66,14 +66,21 @@ var yipC3AudioPool = new ObjectPool(createC3YipAudio, resetYipAudio);
 
 function fetchUserYips(user) {
   if (!(user in state.userYips)) {
-    let yips = localStorage.getItem(user);
-    if (yips == null) {
-      yips = 0;
-    } else {
-      yips = parseInt(yips);
+    let userData = localStorage.getItem(user);
+    let yips = 0;
+    let bonusYips = 0;
+    if (userData != null) {
+      try {
+        userData = JSON.parse(userData);
+        yips = userData.yips;
+        bonusYips = userData.bonusYips;
+      } catch (e) {
+        // ignore
+      }
     }
     state.userYips[user] = {
       yips: yips,
+      bonusYips: bonusYips,
       commandCooldown: false,
       lastTimestamp: new Date()
     };    
@@ -82,20 +89,32 @@ function fetchUserYips(user) {
   return state.userYips[user];
 }
 
-function updateYips(user, extraYips) {
+function updateYips(user, yipChange) {
   var userYips = fetchUserYips(user);
+  yipChange = yipChange || 0;
   if (config.mods.includes(user)) {
     userYips.yips = 99999999999999;
   } else {
-    var newTimestamp = new Date();
-    var seconds = Math.floor(getSecondsDiff(newTimestamp, userYips.lastTimestamp) / config.secondsPerYip);
-    if (seconds > 0) {
-      userYips.lastTimestamp = new Date();
-      userYips.yips = Math.min(100, userYips.yips + seconds + (extraYips || 0));
-      localStorage.setItem(user, userYips.yips);
+    let newTimestamp = new Date();
+    let newYips = Math.floor(getSecondsDiff(newTimestamp, userYips.lastTimestamp) / config.secondsPerYip);
+    console.log("newYips: " + newYips);
+    console.log("old yips: " + userYips.yips);
+    console.log("old bonusYips: " + userYips.bonusYips);
+    userYips.lastTimestamp = newTimestamp;
+    if (yipChange < 0) {
+      userYips.yips = userYips.yips + newYips + yipChange;
+      if (userYips.yips < 0) {
+        userYips.bonusYips = userYips.bonusYips + userYips.yips;
+        userYips.yips = 0;
+      }
     } else {
-      userYips.yips = Math.min(100, userYips.yips + (extraYips || 0));
+      userYips.yips = Math.min(100, userYips.yips + newYips);
+      userYips.bonusYips += yipChange;
     }
+    console.log("new yips: " + userYips.yips);
+    console.log("new bonusYips: " + userYips.bonusYips)
+    let newUserData = {"yips": userYips.yips, "bonusYips": userYips.bonusYips};
+    localStorage.setItem(user, JSON.stringify(newUserData));
   }
 }
 
