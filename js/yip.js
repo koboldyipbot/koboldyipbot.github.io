@@ -97,9 +97,6 @@ function updateYips(user, yipChange) {
   } else {
     let newTimestamp = new Date();
     let newYips = Math.floor(getSecondsDiff(newTimestamp, userYips.lastTimestamp) / config.secondsPerYip);
-    console.log("newYips: " + newYips);
-    console.log("old yips: " + userYips.yips);
-    console.log("old bonusYips: " + userYips.bonusYips);
     userYips.lastTimestamp = newTimestamp;
     if (yipChange < 0) {
       userYips.yips = userYips.yips + newYips + yipChange;
@@ -111,8 +108,6 @@ function updateYips(user, yipChange) {
       userYips.yips = Math.min(100, userYips.yips + newYips);
       userYips.bonusYips += yipChange;
     }
-    console.log("new yips: " + userYips.yips);
-    console.log("new bonusYips: " + userYips.bonusYips)
     let newUserData = {"yips": userYips.yips, "bonusYips": userYips.bonusYips};
     localStorage.setItem(user, JSON.stringify(newUserData));
   }
