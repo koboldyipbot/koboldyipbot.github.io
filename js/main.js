@@ -1,4 +1,15 @@
 // Define configuration options
+var lastChatDates = loadLastChatDates();
+
+function loadLastChatDates() {
+  return JSON.parse(localStorage.getItem("lastChatDates")) || {};
+}
+
+function periodicallyCacheLastChats() {
+  localStorage.setItem("lastChatDates", JSON.stringify(lastChatDates));
+  setTimeout(periodicallyCacheLastChats, config.cacheLastChatsTimeout);
+}
+
 const opts = {
   identity: {
     username: config.twitchUsername,
@@ -72,9 +83,14 @@ function hello() {
 
 // Called every time a message comes in
 function onMessageHandler (channel, context, msg, self) {
-  if (self && !(msg.startsWith("!yip")||msg.startsWith("!workshop"))) { return; }
-
   var user = context["display-name"];
+
+  prevChatDate = lastChatDates[user];
+  lastChatDates[user] = new Date();
+  addRPGChatXP(user, prevChatDate);
+  rpgSpringTrap(user, client, channel);
+
+  if (self && !(msg.startsWith("!yip")||msg.startsWith("!workshop"))) { return; }
 
   if (context.bits) {
 
@@ -96,6 +112,8 @@ function onMessageHandler (channel, context, msg, self) {
   // console.log(msg);
   
   updateYips(user);
+
+
   // raffleAddEntryToday(user);
 
   if (!msg.startsWith('!')) { return; }
@@ -155,8 +173,7 @@ function onMessageHandler (channel, context, msg, self) {
   } else if (cmd1 === '!yip') {
 
     var args = command.split(/ +/, 4);
-    console.log(args);
-    if (args.length == 1) {
+    if (args.length == 1 || args[1] == "help") {
       doHelp(channel, context);
       return;
     } else if (args[1].toLowerCase() === "give" && config.mods.includes(user)) {
@@ -196,6 +213,23 @@ function onMessageHandler (channel, context, msg, self) {
     } else if (state.helloEnabled || isMod) {
       hello();
     }
+  } else if (cmd1 === "!rpg") {
+    var cmd2 = commandArr[1] ? commandArr[1].toLowerCase() : null;
+    if (cmd2 === "scavenge") {
+      rpgScavenge(user, client, channel);
+    } else if (cmd2 === "start") {
+      startRPGCharacter(user);
+    } else if (cmd2 === "fight") {
+      var targetUser = commandArr[2] ? commandArr[2].toLowerCase() : null;
+      if (targetUser != null) {
+        rpgFight(user, targetUser, client, channel);
+      } else {
+        rpgFightRandomOpponent(user, client, channel);
+      }
+    } else if (cmd2 === "trap") {
+      let targetUser = commandArr[2];
+      rpgSetTrap(user, targetUser, client, channel);
+    }
   } else if (cmd1 === "!help") {
     client.say(channel, "Full command list here: https://wyx.gay/yipbot");
   } else if (cmd1 === "!raid") {
@@ -219,7 +253,6 @@ function onMessageHandler (channel, context, msg, self) {
     var cmd2 = commandArr[1] ? commandArr[1].toLowerCase() : null;
     if (isMod) {
       // meta commands
-      console.log("1");
       if (cmd2 === "enable") {
         raffleSetIsEnabled(true);
       } else if (cmd2 === "disable") {
@@ -231,7 +264,6 @@ function onMessageHandler (channel, context, msg, self) {
       }
       // commands
       else if (raffleIsEnabled) {
-        console.log("2");
         if (cmd2 === "draw") {
           raffleDrawCommand(client, channel);
         } else if (cmd2 === "add" && commandArr[2] && commandArr[3]) {

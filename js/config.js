@@ -1,4 +1,5 @@
 const config = {
+    cacheLastChatsTimeout: 30, // seconds
     defaultYipSongNoteLength: 400,
     secondsPerYip: 15,
     minimumYipGapMilliseconds: 1,
@@ -18,5 +19,11 @@ const config = {
         "KoboldUnderlord",
         "kobold_wyx",
         "yip_bot"
-    ]
+    ],
+    rpg: {
+        fightCooldown: 0, // seconds
+        maxXPPerLevel: 100000,
+        scavengeCooldown: 0, // 30 * 60  // seconds
+        trapExpiration: 30 // seconds
+    }
 };
