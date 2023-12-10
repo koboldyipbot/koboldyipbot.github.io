@@ -20,4 +20,12 @@ Do not repackage this and sell it, I mainly wish it just to be used for fun by p
 
 the things you want to edit in config would be to put that token into `twitchOAuthPassword`, replace my channel with yours in `twitchChannels`,  and then put the twitch username of you and anyone else you want with mod permissions under `mods`
 
-once you do that, open `index.html` in a browser and fool around with the `yipOffsetLeft` and `yipOffsetTop` until the yips are coming out at the right spot for where your kobold's mouth is and you're done!
+once you do that, open `index.html` in a browser and fool around with the `yipOffsetLeft` and `yipOffsetTop` until the yips are coming out at the right spot for where your kobold's mouth is and you're done with code!
+
+I use OBS' Browser source to point at the local file for index.html, with width 2000 and height 1200.
+
+I also use some simple custom CSS to hide the background:
+
+```
+body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; color: black; }
+```
