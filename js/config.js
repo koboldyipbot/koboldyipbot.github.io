@@ -25,5 +25,8 @@ const config = {
         maxXPPerLevel: 100000,
         scavengeCooldown: 0, // 30 * 60  // seconds
         trapExpiration: 30 // seconds
+    },
+    websocketConfig: {
+        pingTimeout: 2 * 60 * 1000 // 2 minutes
     }
 };
