@@ -357,7 +357,7 @@ function angelYip() {
     [58, 0], [67, eighth+sixteenth], [58, 0], [67, eighth+sixteenth], [55, 0], [67, eighth+sixteenth], [58, 0], [67, eighth+sixteenth], [58, 0], [67, quarter], [60, 0], [72, quarter+eighth]
     ];
 
-  let finalSong = line1; //.concat(line2).concat(line3).concat(line4).concat(line5).concat(line6).concat(line7).concat(line8).concat(line9).concat(line10);
+  let finalSong = line1.concat(line2).concat(line3).concat(line4).concat(line5).concat(line6).concat(line7).concat(line8).concat(line9).concat(line10);
 
   var originalImage1 = config.image1;
   var originalImage2 = config.image2;
