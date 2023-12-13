@@ -154,6 +154,8 @@ function onMessageHandler (channel, context, msg, self) {
         koboldTownYip();
       } else if (song === "zeldastorms") {
         songOfStormsYip();
+      } else if (song === "sandstorm") {
+        sandstormYip();
       } else if (song === "custom") {
         var songString = commandArr.slice(2).join(" ");
         var song = detokenizeYipSong(songString);

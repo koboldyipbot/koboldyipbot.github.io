@@ -5,9 +5,8 @@
 // 5.  open a new, empty tab
 // 6.  copy and paste the code for the wwwEncode function into the browser console
 // 7.  copy and paste the code for the getTwitchRefreshToken function into the browser console
-// 8.  copy and paste the filled-out secrets.js into the console
-// 9.  run `getTwitchRefreshToken("client id", "client secret", "code parameter output from step 4")` in your browser (don't copy the ` on either side of the function call)
-// 10. copy the printed refresh token back into secrets.js
+// 8.  run `getTwitchRefreshToken("client id", "client secret", "code parameter output from step 4")` in your browser (don't copy the ` on either side of the function call)
+// 9.  copy the printed refresh token back into secrets.js
 
 // DO NOT SHARE YOUR REFRESH TOKEN
 
@@ -51,7 +50,10 @@ async function getTwitchRefreshToken(clientID, clientSecret, authCode) {
       redirect_uri: "http://localhost"
     })
   });
-  console.log(await resp.json().refresh_token);
+
+  let output = await resp.json();
+  console.log(`refresh token: ${output.refresh_token}`);
+  return output;
 }
 
 async function getTwitchAuthToken(auth) {
@@ -123,9 +125,32 @@ function rebuildWebsocketInner() {
 function twitchEventChannelPointHandler(data) {
   let reward = data.data.redemption.reward;
   let user = data.data.redemption.user.login;
+  console.log(`redemption: ${reward.title}`);
   if (reward.title == "Buy 100 Yips") {
     updateYips(user, 100);
     console.log(fetchUserYips(user));
+  } else if (reward.title == "Yipsong: Mario") {
+    marioYip();
+  } else if (reward.title == "Yipsong: Girl in the Tower") {
+    girlInTheTowerYip();
+  } else if (reward.title == "Yipsong: Charge!!!") {
+    chargeYip();
+  } else if (reward.title == "Yipsong: Sans") {
+    sansYip();
+  } else if (reward.title == "Yipsong: Yakety Yip") {
+    yaketyYip();
+  } else if (reward.title == "Yipsong: Yip Shanty 2") {
+    yipShanty2Yip();
+  } else if (reward.title == "Yipsong: Blinded By the Yip") {
+    blindedYip();
+  } else if (reward.title == "Yipsong: Neon Genesis Yipvangeleon") {
+    angelYip();
+  } else if (reward.title == "Yipsong: Kobold Town") {
+    koboldTownYip();
+  } else if (reward.title == "Yipsong: Song of Storms") {
+    songOfStormsYip();
+  } else if (reward.title == "Yipsong: Sandstorm") {
+    sandstormYip();
   }
 }
 
@@ -143,7 +168,7 @@ function twitchEventListenToTopic(topic, messageHandlerFunc) {
   }
 }
 
-function refreshWebsocketocket() {
+function refreshWebsocket() {
   if (twitchEventWebsocket == null) {
     console.log("rebuilding");
     rebuildWebsocket();

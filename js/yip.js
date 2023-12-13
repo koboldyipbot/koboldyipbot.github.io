@@ -197,14 +197,25 @@ function yipShanty2Yip() {
 }
 
 function sandstormYip() {
+  var w = 1600;
+  var h = w/2;
+  var q = h/2;
+  var e = q/2;
+  var s = e/2;
   playSong([
-    [59, 100], [59, 100], [59, 100], [59, 100], [59, 2400], 
-    [64, 400], [59, 100], [59, 100], [59, 100], [59, 100], [59, 2400], 
-    [59, 100], [59, 100], [59, 100], [59, 100], [59, 400], 
-    [59, 100], [59, 100], [59, 100], [59, 100], [59, 400], 
-    [59, 100], [59, 100], [59, 100], [59, 100], [59, 400], 
-    [59, 100], [59, 100], [59, 100], [59, 100], [59, 400]
-    ]);
+    [59, s], [59, s], [59, s], [59, s], [59, w+h], 
+    [64, q], [59, s], [59, s], [59, s], [59, s], [59, w+h], 
+    [59, s], [59, s], [59, s], [59, s], [59, q], [59, s], [59, s], [59, s], [59, s], [59, q], 
+    [59, s], [59, s], [59, s], [59, s], [59, q], [59, s], [59, s], [59, s], [59, s], [59, q], 
+    [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], 
+    [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [64, s/2], [63, s/2], [62.5, s/2], [62, s/2], [61, s/2], [60.5, s/2], [60, s/2], [59.5, s/2], 
+    [59, s], [59, s], [59, s], [59, s], [59, e], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, e], [64, s], [64, s], 
+    [64, s], [64, s], [64, s], [64, s], [64, e], [62, s], [62, s], [62, s], [62, s], [62, s], [62, s], [62, e], [57, s], [57, s],
+    [59, s], [59, s], [59, s], [59, s], [59, e], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, e], [64, s], [64, s], 
+    [59, s], [59, s], [59, s], [59, s], [59, e], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, e], [64, s], [64, s], 
+    [59, s], [59, s], [59, s], [59, s], [59, e], [59, s], [59, s], [59, s], [59, s], [59, s], [59, s], [59, e], [64, s], [64, s], 
+    [64, s], [64, s], [64, s], [64, s], [64, e], [62, s], [62, s], [62, s], [62, s], [62, s], [62, s], [62, e], [57, s], [57, s], 
+  ]);
 }
 
 /*
@@ -346,7 +357,20 @@ function angelYip() {
     [58, 0], [67, eighth+sixteenth], [58, 0], [67, eighth+sixteenth], [55, 0], [67, eighth+sixteenth], [58, 0], [67, eighth+sixteenth], [58, 0], [67, quarter], [60, 0], [72, quarter+eighth]
     ];
 
-  playSong(line1.concat(line2).concat(line3).concat(line4).concat(line5).concat(line6).concat(line7).concat(line8).concat(line9).concat(line10));
+  let finalSong = line1; //.concat(line2).concat(line3).concat(line4).concat(line5).concat(line6).concat(line7).concat(line8).concat(line9).concat(line10);
+
+  var originalImage1 = config.image1;
+  var originalImage2 = config.image2;
+
+  config.image1 = "images/yip_plug1.png";
+  config.image2 = "images/yip_plug2.png";
+
+  function finishFunc() {
+    config.image1 = originalImage1;
+    config.image2 = originalImage2;
+  }
+
+  playSong(finalSong, false, finishFunc);
 
 }
 
@@ -558,7 +582,7 @@ function setupSongAudio(midiPitch) {
   return a;
 }
 
-function playSong(song, forceSong) {
+function playSong(song, forceSong, finishFunc) {
   if (forceSong === undefined && state.isSinging) {
     console.log(":(")
         // var val = $("#debugdiv").val();
@@ -582,7 +606,7 @@ function playSong(song, forceSong) {
     yips.push([a, lengthInMillis]);
   }
 
-  setTimeout(playSongInner, 500 + song.length * 10, yips, 0);
+  setTimeout(playSongInner, 500 + song.length * 10, yips, 0, finishFunc);
   // playSongInner(yips, 0);
     // } catch (err) {
     //     state.isSinging = false;
@@ -629,9 +653,9 @@ function playSongInner(song, index, finishFunc) {
 
   if (index < song.length-1 && !stopSong) {
     if (lengthInMillis == 0) {
-      playSongInner(song, index+1);
+      playSongInner(song, index+1, finishFunc);
     } else {
-      setTimeout(playSongInner, lengthInMillis, song, index+1);   
+      setTimeout(playSongInner, lengthInMillis, song, index+1, finishFunc);   
     }
     
   } else {
