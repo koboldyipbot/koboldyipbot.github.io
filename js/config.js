@@ -21,9 +21,9 @@ const config = {
         "yip_bot"
     ],
     rpg: {
-        fightCooldown: 0, // seconds
+        fightCooldown: 1 * 60, // seconds
         maxXPPerLevel: 100000,
-        scavengeCooldown: 0, // 30 * 60  // seconds
+        scavengeCooldown: 5 * 60,  // seconds
         trapExpiration: 30 // seconds
     },
     websocketConfig: {

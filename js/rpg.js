@@ -9,7 +9,7 @@ var lastRPGFightDates = {}; // user to date
 var rpgTraps = {}; // user maps to object that tracks the trapping user and the trap expiration date.
 
 function getRPGCharacterStorageKey(user) {
-	return user + "-idlerpg";
+	return user.toLowerCase() + "-idlerpg";
 }
 
 function getRPGDefaultData() {
@@ -102,14 +102,15 @@ function saveRPGCharacter(user, data) {
 			delete data.equipment[i];
 		}
 	}
-	data["lastUpdate"] = new Date();
+	data.lastUpdate = new Date();
+	data.username = user;
 	localStorage.setItem(getRPGCharacterStorageKey(user), JSON.stringify(data));
 }
 
 function rpgScavengeCooldown(user) {
 	// return amount of time left before we can scavenge
 	let now = new Date();
-	let lastScavenge = lastRPGScavengeDates[user];
+	let lastScavenge = lastRPGScavengeDates[user.toLowerCase()];
 	if (lastScavenge == null) {
 		return 0;
 	}
@@ -133,14 +134,14 @@ function rpgScavenge(user, client, channel) {
 		} else {
 			getRPGItem(user, client, channel);
 		}
-		lastRPGScavengeDates[user] = new Date();
+		lastRPGScavengeDates[user.toLowerCase()] = new Date();
 	} else {
 		client.say(channel, `${user}: You must wait ${scavengeCooldown / 60} minutes before you can scavenge again.`);
 	}
 }
 
 function rpgSetTrap(user, targetUser, client, channel) {
-	if (user == targetUser) {
+	if (user.toLowerCase() == targetUser.toLowerCase()) {
 		return;
 	}
 
@@ -159,7 +160,7 @@ function rpgSetTrap(user, targetUser, client, channel) {
 		return;
 	}
 
-	rpgTraps[targetUser] = {setBy: user, setDate: new Date()}
+	rpgTraps[targetUser.toLowerCase()] = {setBy: user, setDate: new Date()}
 	data.items.traps -= 1;
 	saveRPGCharacter(user, data);
 }
@@ -170,7 +171,7 @@ function rpgSpringTrap(user, client, channel) {
 		return;
 	}
 
-	let trap = rpgTraps[user];
+	let trap = rpgTraps[user.toLowerCase()];
 	if (trap == null) {
 		return;
 	}
@@ -194,14 +195,14 @@ function rpgSpringTrap(user, client, channel) {
 		} else {
 			stealMessage += " but you laugh when they stomp away without a suitable prize!";
 		}
-		delete rpgTraps[user];
+		delete rpgTraps[user.toLowerCase()];
 		client.say(channel, stealMessage);
 
 		trapperData.xp += data.level;
 		saveRPGCharacter(trap.setBy, trapperData);
 		saveRPGCharacter(user, data);
 	} else {
-		delete rpgTraps[user];
+		delete rpgTraps[user.toLowerCase()];
 		data.xp += data.level;
 		saveRPGCharacter(user, data);
 	}
@@ -257,7 +258,7 @@ function getRPGEquipSlotToSteal(winnerData, loserData) {
 function rpgFightCooldown(user) {
 	// return amount of time left before we can fight
 	let now = new Date();
-	let lastFight = lastRPGFightDates[user];
+	let lastFight = lastRPGFightDates[user.toLowerCase()];
 	if (lastFight == null) {
 		return 0;
 	}
@@ -282,7 +283,7 @@ function rpgFightRandomOpponent(user, client, channel) {
 }
 
 function rpgFight(user, targetUser, client, channel) {
-	if (user == targetUser) {
+	if (user.toLowerCase() == targetUser.toLowerCase()) {
 		return;
 	}
 
@@ -294,7 +295,7 @@ function rpgFight(user, targetUser, client, channel) {
 
 	let targetData = getRPGCharacter(targetUser);
 	if (!targetData.active) {
-		client.say(channel, `${user}: That user is not currently participating in the RPG.  If they wish to join, they can enter into the chat: !rpg start`);
+		client.say(channel, `${user}: That user is invalid, or is not currently participating in the RPG.  If they wish to join, they can enter into the chat: !rpg start`);
 		return;
 	}
 
@@ -302,14 +303,16 @@ function rpgFight(user, targetUser, client, channel) {
 	if (fightCooldown > 0) {
 		client.say(channel, `${user}: You must wait ${fightCooldown / 60} minutes before you can fight again!`);
 		return;
+	} else {
+		lastRPGFightDates[user.toLowerCase()] = new Date();
 	}
 
 	let initiatorRoll = getRPGRoll(user, initiatorData);
 	let targetRoll = getRPGRoll(targetUser, targetData);
 
 	while (initiatorRoll == targetRoll) {
-		initiatorRoll = getRPGRoll(initiatorData);
-		targetRoll = getRPGRoll(targetData);
+		initiatorRoll = getRPGRoll(user, initiatorData);
+		targetRoll = getRPGRoll(targetUser, targetData);
 	}
 
 	if (initiatorRoll > targetRoll) {
@@ -320,7 +323,7 @@ function rpgFight(user, targetUser, client, channel) {
 		if (stolenItem != null) {
 			stealMessage = `-- ${user} snatches up the opponent's level ${stolenItemLevel} ${stolenItem}`
 			if (droppedItemLevel > 0) {
-				stealMessage += `, discarding the level ${droppedItemLevel} one- ${targetUser} grabs it in desparation.`;
+				stealMessage += `, discarding the level ${droppedItemLevel} one- ${targetData.username || targetUser} grabs it in desparation.`;
 			} else {
 				stealMessage += "!";
 			}
@@ -332,7 +335,7 @@ function rpgFight(user, targetUser, client, channel) {
 		}
 		client.say(
 			channel,
-			`${user} challenges ${targetUser} to a fight and wins! ` +
+			`${user} challenges ${targetData.username || targetUser} to a fight and wins! ` +
 			`(${initiatorRoll} vs ${targetRoll}) ` +
 			stealMessage
 		);
@@ -342,7 +345,7 @@ function rpgFight(user, targetUser, client, channel) {
 		let droppedItemLevel = targetData.equipment[stolenItem] || 0;
 		let stealMessage = "";
 		if (stolenItem != null) {
-			stealMessage = `-- ${targetUser} snatches up the opponent's level ${stolenItemLevel} ${stolenItem}`;
+			stealMessage = `-- ${targetData.username || targetUser} snatches up the opponent's level ${stolenItemLevel} ${stolenItem}`;
 			if (droppedItemLevel > 0) {
 				stealMessage += `, discarding the level ${droppedItemLevel} one- ${user} grabs it in desparation.`;
 			} else {
@@ -357,7 +360,7 @@ function rpgFight(user, targetUser, client, channel) {
 
 		client.say(
 			channel,
-			`${user} challenges ${targetUser} to a fight and loses! ` +
+			`${user} challenges ${targetData.username || targetUser} to a fight and loses! ` +
 			`(${initiatorRoll} vs ${targetRoll}) ` +
 			stealMessage
 		);

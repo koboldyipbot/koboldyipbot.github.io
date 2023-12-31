@@ -72,8 +72,8 @@ function fetchUserYips(user) {
     if (userData != null) {
       try {
         userData = JSON.parse(userData);
-        yips = userData.yips;
-        bonusYips = userData.bonusYips;
+        yips = userData.yips || 100;
+        bonusYips = userData.bonusYips || 0;
       } catch (e) {
         // ignore
       }

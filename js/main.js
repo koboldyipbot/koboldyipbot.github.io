@@ -231,6 +231,8 @@ function onMessageHandler (channel, context, msg, self) {
     } else if (cmd2 === "trap") {
       let targetUser = commandArr[2];
       rpgSetTrap(user, targetUser, client, channel);
+    } else {
+      client.say(channel, "Valid subcommands: scavenge, start, fight, fight [user], trap [user].  see: https://wyx.gay/yipbot")
     }
   } else if (cmd1 === "!help") {
     client.say(channel, "Full command list here: https://wyx.gay/yipbot");

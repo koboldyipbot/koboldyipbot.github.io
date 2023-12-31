@@ -172,7 +172,7 @@ function refreshWebsocket() {
   if (twitchEventWebsocket == null) {
     console.log("rebuilding");
     rebuildWebsocket();
-    listenToTopic(`channel-bits-events-v1.${secrets.twitchChannelPoints.channelID}`);
+    twitchEventListenToTopic(`channel-bits-events-v1.${secrets.twitchChannelPoints.channelID}`);
     if (twitchEventRefreshTimeoutID != null) {
       clearTimeout(twitchEventRefreshTimeoutID);
     }
