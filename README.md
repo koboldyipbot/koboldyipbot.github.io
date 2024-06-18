@@ -6,9 +6,16 @@ To use, load yip.html into your browser, ie. by clicking and dragging the file i
 Can be used to interactively yip without configuring the Twitch integration.  Just click on the screen!
 
 ## Licensing ##
-You may use this code however you see fit as long as you attribute creation to Ames (@KoboldUnderlord on Twitter)
+As an individual Twitch streamer:
 
-Do not repackage this and sell it, I mainly wish it just to be used for fun by people who download it
+- You may edit and use this code however you see fit as long as you attribute creation to Kobold Interactive ([@KoboldInteractive on Cohost](https://koboldinteractive.cohost.org))
+
+As a commercial entity:
+
+- We need a licensing contract before anything is OK, as this is intended as a tool for small-scale streamers or developers
+- You may not repackage or sell this or make money off the use or modification of this code without a contract
+
+If you are operating at a scale beyond a single streamer or are a streamer making 6 digits, you should consider yourself a commercial entity for the purposes of this license.
 
 ## Lazy setup ##
 
