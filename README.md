@@ -5,6 +5,8 @@ To use, load yip.html into your browser, ie. by clicking and dragging the file i
 
 Can be used to interactively yip without configuring the Twitch integration.  Just click on the screen!
 
+Chatbot command help can be found on https://wyx.gay/yipbot
+
 ## Licensing ##
 As an individual Twitch streamer:
 
