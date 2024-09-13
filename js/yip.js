@@ -106,6 +106,9 @@ function updateYips(user, yipChange) {
       }
     } else {
       userYips.yips = Math.min(100, userYips.yips + newYips);
+      if (!Number.isInteger(userYips.bonusYips)) {
+        userYips.bonusYips = 0;
+      }
       userYips.bonusYips += yipChange;
     }
     let newUserData = {"yips": userYips.yips, "bonusYips": userYips.bonusYips};
@@ -690,7 +693,7 @@ function playSongInner(song, index, finishFunc) {
 }
 
 function cheer_yip(channel, context, msg, self) {
-  yip(client, target, yipCount, msPerYip);
+  yip(yipCount, msPerYip);
 }
 
 

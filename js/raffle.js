@@ -36,9 +36,10 @@ function raffleGetEntryCount(user) {
 	return raffleGetEntries()[user] || 0;
 }
 
-function raffleDo() {
+function raffleDo(times) {
 	var entries = raffleGetEntries();
 	var raffleEntries = [];
+	
 	for (var day in entries) {
 		var dayEntries = entries[day];
 		if (typeof(dayEntries) !== "object") {
@@ -48,7 +49,12 @@ function raffleDo() {
 			raffleEntries.push(user);
 		}
 	}
-	return raffleEntries[Math.floor(Math.random()*raffleEntries.length)];
+	
+	var winners = new Set();
+	while (winners.size < times) {
+		winners.add(raffleEntries[Math.floor(Math.random()*raffleEntries.length)]);
+	}
+	return Array.from(winners);
 }
 
 function raffleQueryCommand(client, channel, user) {
@@ -65,9 +71,12 @@ function raffleDebug(client, channel) {
 	client.say(channel, JSON.stringify(raffleGetEntries()));
 }
 
-function raffleDrawCommand(client, channel) {
-	var winner = raffleDo();
-	client.say(channel, "The winner of the raffle is @" + winner + "! YIPYIPYIYPYIPYIYPYIPYIPYIP");
+function raffleDrawCommand(client, channel, times) {
+	var winners = raffleDo(times);
+	let s = winners.length > 1 ? "s" : "";
+	let is = winners.length > 1 ? "are" : "is";
+	winners[winners.length-1] = winners.length > 1 ? `and ${winners[winners.length-1]}` : winners[winners.length-1];
+	client.say(channel, `The winner${s} of the raffle ${is} ${winners.join(', ')}! YIPYIPYIYPYIPYIYPYIPYIPYIP`);
 }
 
 function raffleSetAcceptEntries(enabled) {

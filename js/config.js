@@ -28,5 +28,15 @@ const config = {
     },
     websocketConfig: {
         pingTimeout: 2 * 60 * 1000 // 2 minutes
-    }
+    },
+    enabledModules: {
+        warframe: {
+            relics: true
+        },
+    },
+    twitchAuthScopes: [
+      "channel:read:redemptions",
+      "bits:read",
+      "user:read:email"
+    ]
 };

@@ -1,0 +1,94 @@
+#tfMachineCanvas {
+	position: absolute;
+}
+
+#tfMachineInput {
+	width: 300px;
+}
+
+#tfMachine {
+	top: 392px;
+}
+
+.tfMachineImg {
+	width: 489px;
+	height: 492px;
+	position: relative;
+}
+
+#tfMachineLayerBack {
+	top: 0px;
+	z-index: 1;
+}
+
+#tfMachineLayerFront {
+	top: -496px;
+	z-index: 3;
+}
+
+.tfUser {
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	left: -300px;
+	top: 670px;
+	scale: 80%;
+	z-index: 2;
+}
+
+.tfUser p {
+	text-align: center;
+	scale: 200%;
+}
+
+.tfUser img {
+	width: 150px;
+	height: 150px;
+}
+
+.tfedUser {
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	left: 110px;
+	top: 490px;
+	scale: 100%;
+	z-index: 2;
+}
+
+.tfedUser p {
+	text-align: center;
+	scale: 200%;
+}
+
+.tfedUser img {
+	width: 150px;
+	height: 150px;
+}
+
+#tfMachine {
+	position: absolute;
+	display: inline;
+	width: 489px;
+}
+
+#tfMachineLid {
+	position: absolute;
+}
+
+#tfMachineBody {
+	position: absolute;
+}
+
+@keyframes tfMachineUserEnterAnim {
+	from {left: -300px;}
+	to {left: 130px;}
+}
+
+@keyframes tfMachineLaunchUser {
+	from {top: 490px; transform: scale(0.8, 0.8);}
+    to {top: -800px; transform: scale(0.8, 2);}
+}
+

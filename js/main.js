@@ -30,7 +30,7 @@ client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
 
 // Connect to Twitch:
-client.connect();
+// client.connect();
 
 // var websocket = new WebSocket('wss://pubsub-edge.twitch.tv')
 
@@ -44,7 +44,7 @@ function postWorkshop() {
     let channel = opts.channels[i];
     client.say(channel, "!workshop");
   }
-  setTimeout(postWorkshop, 900000);
+  // setTimeout(postWorkshop, 900000);
 }
 
 function postStartYips() {
@@ -54,8 +54,8 @@ function postStartYips() {
     // client.say(channel, "!yip 10000 10000");
     // client.say(channel, "!yip 13333 13333");
   }
-  yip(10000, 10000);
-  yip(13333, 13333);
+  // yip(10000, 10000);  actual yip start
+  // yip(13333, 13333);
   // setTimeout(StartYips, 900000);
 }
 
@@ -83,6 +83,7 @@ function hello() {
 
 // Called every time a message comes in
 function onMessageHandler (channel, context, msg, self) {
+  console.log(context);
   var user = context["display-name"];
 
   prevChatDate = lastChatDates[user];
@@ -127,6 +128,7 @@ function onMessageHandler (channel, context, msg, self) {
   var isMod = config.mods.includes(user);
 
   var cmd1 = commandArr[0].toLowerCase();
+  console.log(channel);
 
   if (cmd1 === "!commands") {
     client.say(channel, "https://wyx.gay/yipbot");
@@ -185,7 +187,7 @@ function onMessageHandler (channel, context, msg, self) {
       updateYips(user, yips);
 
     } else {
-      var yips = parseInt(args[1]) + 1;
+      var yips = parseInt(args[1]);
       var msPerYip = parseInt(args[2]);
       if (((isNaN(yips) || isNaN(msPerYip))) && !state.helpInCooldown) {
         doHelp(channel, context);
@@ -204,7 +206,7 @@ function onMessageHandler (channel, context, msg, self) {
         return;
       }
       
-      yip(yips, msPerYip);
+      yip(yips+1, msPerYip);
       updateYips(user, -yips);
     }
   } else if (cmd1 === "!hello") {
@@ -234,61 +236,96 @@ function onMessageHandler (channel, context, msg, self) {
     } else {
       client.say(channel, "Valid subcommands: scavenge, start, fight, fight [user], trap [user].  see: https://wyx.gay/yipbot")
     }
+  } else if (cmd1 === "!warframe") {
+    var cmd2 = commandArr[1] ? commandArr[1].toLowerCase() : null;
+    if (cmd2 === "search") {
+      var cmd3 = commandArr[2] ? commandArr[2].toLowerCase() : null;
+      console.log(cmd3);
+      var searchText = commandArr.slice(3).join(" ");
+      if (cmd3 === "relic") {
+        warframeChatRelicSearch(user, client, channel, searchText);
+      } else if (cmd3 === "item" || cmd3 === "vaulted") {
+        let vaulted = cmd3 === "vaulted";
+        let searchText = commandArr.slice(vaulted ? 4 : 3).join(" ");
+        warframeChatItemSearch(user, client, channel, vaulted, searchText);
+      } else {
+        client.say(channel, `${user}: Unknown item type. Command: !warframe search [relic|item] [search text]`);
+      }
+    } else if (cmd2 === "raffle") {
+      client.say(channel, `wyx has the following relics: Axi A2, A5, C8, D5, I3, K12, P6, S15, T9, T11, V8; Lith C7, G9, G11, H10, K11, N13, P8, P9, R5, S13, T10, T12, V10; Meso A5, C7, C10, M4, N16, P12, S13, W2, W3; Neo A10, E3, F3, G5, K6, K7, O1, P5, W1, Z9`);
+    } else if (config.mods.includes(user)) {
+      if (cmd2 ===  "relic") {
+        let relics = ["Axi A2", "Axi A5", "Axi C8", "Axi D5", "Axi I3", "Axi K12", "Axi P6", "Axi S15", "Axi T9", "Axi T11", "Axi V8", "Lith C7", "Lith G9", "Lith G11", "Lith H10", "Lith K11", "Lith N13", "Lith P8", "Lith P9", "Lith R5", "Lith S13", "Lith T10", "Lith T12", "Lith V10", "Meso A5", "Meso C7", "Meso C10", "Meso M4", "Meso N16", "Meso P12", "Meso S13", "Meso W2", "Meso W3", "Neo A10", "Neo E3", "Neo F3", "Neo G5", "Neo K6", "Neo K7", "Neo O1", "Neo P5", "Neo W1", "Neo Z9"];
+        let relic = relics[Math.floor(Math.random()*relics.length)];
+        client.say(channel, `Next relic: ${relic}`);
+      }
+    }
+    // client.say(channel, "Available vaulted relics: Axi: B7, D5, I3, K12, P6, T9, V11 - Lith: G9, G11, N13, S13, T10, V10 - Meso: A5, C7, C10, H6, M4, P12, W2, W3 - Neo: A10, E3, F3, K6, K7, P5, S2, W1, Z9");
   } else if (cmd1 === "!help") {
     client.say(channel, "Full command list here: https://wyx.gay/yipbot");
-  } else if (cmd1 === "!raid") {
+  // } else if (cmd1 === "!raid") {
     // client.say(channel, "Today we're gonna raid @ultchimi!!!! be sure to yip at him!!!!");
   } else if (cmd1 === "!artist") {
     client.say(channel, "The current vtuber artist today is @ovaettr!");
   } else if (cmd1 === "!music") {
     client.say(channel, "Intro music by @kobold_wyx - https://wyx.gay/music");
+  } else if (cmd1 === "!patreon") {
+    client.say(channel, "Making & streamin' games - now on Patreon! - https://patreon.com/KoboldInteractive");
+  } else if (cmd1 === "!kofi" || cmd1 === "!ko-fi") {
+    client.say(channel, "Making & streamin' games - now on Ko-fi! - https://ko-fi.com/kobold_interactive");
   } else if (cmd1 === "!discord") {
-    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/Ca6SAwVA");
+    client.say(channel, "Join the Kobold Town Discord! https://discord.gg/b8C9nPyP");
   } else if (cmd1 === "!forum") {
     client.say(channel, "Join the Kobold Town Forum! https://kobold.town");
-  } else if (cmd1 === "!charity") {
-    client.say(channel, "wyx is donating $5 to the Palestinian Children's Relief Fund for every time they eat a child!  If you donate at least $1 and send a receipt to wyx@koboldinteractive.com, you'll gain an extra !raffle entry!");
-  } else if (cmd1 === "!workshop") {
+  // } else if (cmd1 === "!charity") {
+  //   client.say(channel, "wyx is donating $5 to the Palestinian Children's Relief Fund for every time they eat a child!  If you donate at least $1 and send a receipt to wyx@koboldinteractive.com, you'll gain an extra !raffle entry!");
+  // } else if (cmd1 === "!workshop") {
     // client.say(channel, "wyx is holding a ttrpg workshop for their custom game on Saturday 9/23, 10am-12pm pacific! https://forums.kobold.town/t/next-workshop-sept-23rd-10am-pacific/110/3");
-  } else if (cmd1 === "!charity") {
+  // } else if (cmd1 === "!charity") {
     // client.say(channel, "wyx is donating 100% of their bits and subs through and including March 26th, when they're going to have an all-day stream to support the Lavender Clinic! see https://wyx.gay");
   } else if (cmd1 === "!raffle") {
     var isMod = config.mods.includes(user);
     var cmd2 = commandArr[1] ? commandArr[1].toLowerCase() : null;
+    console.log(`!raffle - ${user} - ${cmd2}`);
     if (isMod) {
       // meta commands
       if (cmd2 === "enable") {
         raffleSetIsEnabled(true);
       } else if (cmd2 === "disable") {
         raffleSetIsEnabled(false);
-      } else if (cmd2 === "raffleOn") {
+      } else if (cmd2 === "raffleon") {
         raffleSetAcceptEntries(true);
-      } else if (cmd2 === "raffleOff") {
+      } else if (cmd2 === "raffleoff") {
         raffleSetAcceptEntries(false);
       }
       // commands
       else if (raffleIsEnabled) {
         if (cmd2 === "draw") {
-          raffleDrawCommand(client, channel);
+          var times = parseInt(commandArr[2]);
+          if (isNaN(times)) {
+            times = 1;
+          }
+          raffleDrawCommand(client, channel, times);
         } else if (cmd2 === "add" && commandArr[2] && commandArr[3]) {
           var day = commandArr[2];
           var user = commandArr[3];
           raffleAddEntry(day, user);
         } else if (cmd2 === "clear") {
           raffleClearEntries();
-        } else if (cmd2 === "checkEntries") {
+        } else if (cmd2 === "checkentries") {
           var user = commandArr[2];
           raffleAdminQueryCommand(client, channel, user);
         } else if (cmd2 === "debug") {
           raffleDebug(client, channel);
         } else {
-          client.say(channel, "type !raffle to join to win art by @ovaettr! drawing at 7:30pm PST! gain an extra entry by emailing a photo of your minimum $1 dono to the PCRF (https://pcrf1.app.neoncrm.com/forms/gaza-relief) and your twitch username to wyx@koboldinteractive.com !");
+          client.say(channel, "type !raffle to join the drawing for the next Void Relic!");
             // "  you can gain one entry per stream, OR gain an extra entry by emailing a photo of your dono and your username to wyx [[at]] koboldinteractive [[dot]] com ! https://twitter.com/kobold_wyx/status/1623493284143448064");
-        }
+        } 
       }
     } else if (raffleIsEnabled) {
+      console.log(`adding ${user} to raffle`);
       raffleAddEntryToday(user);
-      raffleQueryCommand(client, channel, user);
+      // raffleQueryCommand(client, channel, user);
     }
   }
 }
@@ -303,7 +340,9 @@ function onMessageHandler (channel, context, msg, self) {
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
   // postWorkshop();
-  setTimeout(postStartYips, 1000);
+  // setTimeout(postStartYips, 1000);
+  // let initiatorData = getRPGCharacter('yip_bot');
+  
   // setTimeout(postLink, 900000);
 }
 

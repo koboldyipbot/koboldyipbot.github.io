@@ -26,6 +26,10 @@ function getRPGDefaultData() {
 	};
 }
 
+function getRPGRandomActivePlayer() {
+	
+}
+
 
 function getRPGCharacter(user) {
 	let data = localStorage.getItem(getRPGCharacterStorageKey(user));
@@ -280,6 +284,14 @@ function rpgFightRandomOpponent(user, client, channel) {
 		targetUser = users[Math.floor(Math.random() * users.length)];
 	}
 	rpgFight(user, targetUser, client, channel);
+}
+
+function initializeYipbot() {
+	let initiatorData = getRPGCharacter(config.twitchUsername);
+	if (!initiatorData.active) {
+		startRPGCharacter(config.twitchUsername);
+		return;
+	}
 }
 
 function rpgFight(user, targetUser, client, channel) {
