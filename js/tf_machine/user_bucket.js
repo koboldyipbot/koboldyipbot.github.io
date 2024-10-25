@@ -12,7 +12,7 @@ function matterLoadImages(urls, onSuccess, onError) {
                 onSuccess(imgUrls);
             }
         };
-        img.onerror = onError();
+        img.onerror = () => onError(url);
         img.src = url;
     }
 }
@@ -123,9 +123,9 @@ $('document').ready(function(){
 
     // ensure bucketFront is always top-layer
     Events.on(matterEngine.world, "afterAdd", function(items) {
-        console.log("doing comparisons!");
+        // console.log("doing comparisons!");
         matterEngine.world.composites.sort((a, b) => {
-            console.log(`comparing: ${a.label} and ${b.label}`);
+            // console.log(`comparing: ${a.label} and ${b.label}`);
             if (a.label === "bucketFront_composite" || b.label === "bucketBack_composite") {
                 return 1;
             } else if (b.label === "bucketFront_composite" || a.label === "bucketBack_composite") {
@@ -225,10 +225,13 @@ function addCatgirl(name) {
                         // slop: 0.2,
                         friction: 0.9,
                         frictionStatic: 100,
-                        // restitution: 0.2
+                        // restitution: 0.2,
+                        // mass: 5,
+                        // density: 1
                     }
                 }
             );
+            console.log(`mass: ${hitbox.mass} -- density: ${hitbox.density}`);
 
 
             var spriteHolder = Bodies.rectangle(
@@ -304,14 +307,13 @@ function addCatgirl(name) {
 
             Composite.add(matterEngine.world, group);
             setTimeout(() => {
-                console.log(`previous density: ${hitbox.density}`);
                 Body.setDensity(hitbox, 0.8);
                 Body.setInertia(hitbox, 100000);
             }, 600);
             // Composite.add(matterEngine.world, [catgirlSprite]);
         },
-        () => {
-            console.log("Error  Loading ");
+        (url) => {
+            console.log(`Error somewhere loading image: ${url}`);
         }
     );
 }
