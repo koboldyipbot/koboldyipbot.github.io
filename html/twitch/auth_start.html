@@ -1,0 +1,38 @@
+ <!DOCTYPE html>
+<html>
+<!-- Imports -->
+
+<!-- Our code -->
+<script src="../../js/secrets.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/util.js"></script>
+<!-- <script src="../../js/twitch/auth.js"></script> -->
+<script src="../../js/twitch/auth_start.js"></script>
+
+<link rel="stylesheet" href="/css/auth.css">
+<body>
+    <div>
+        <p>Instructions:</p>
+        <ol>
+            <li>Make sure js/secrets.js is a copy of js/secrets-blank.js and is filled out with all account info.  These will be shown as a list of radio buttons to choose from.</li>
+            <li>Select which account to authenticate</li>
+            <li>Note the randomly generated data in the "state" textbox.  This needs to match what Twitch returns to ensure your account information is safe, and protect against cross-site forgery requests.</li>
+            <li>Click "Begin Authentication" button - this will copy the state value into your clipboard, which you will need to validate your login.</li>
+            <li>Log into your Twitch account as normal- you will be redirected to a new local page.</li>
+            <li>Paste the "state" textbox into the page Twitch returns you to.</li>
+            <li>If the state matches, authentication was successful!</li>
+            <li>If it does not match, try again.  If it continually does not work, something unexpected is going on with the authentication process and you should probably consult a computer security expert.</li>
+        </ol>
+        
+        <form id="submitForm" autocomplete="off">
+            <p>Select which account to authenticate against:</p>
+            <ul id="twitchAccountSelector" style="list-style-type: none;">
+            </ul>
+
+            <label for="twitchState">State:<input style="width: 300px;" type="text" id="twitchState" name="state" readonly="readonly" autocomplete="off" /></label>
+            
+            <input id="submitButton" type="submit" value="Begin Authentication" />
+        </form>
+    </div>
+</body>
+</html> 

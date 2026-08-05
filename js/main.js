@@ -1,3 +1,5 @@
+import {TwitchUtils} from './twitch/utils.js';
+
 // Define configuration options
 var lastChatDates = loadLastChatDates();
 
@@ -10,13 +12,24 @@ function periodicallyCacheLastChats() {
   setTimeout(periodicallyCacheLastChats, config.cacheLastChatsTimeout);
 }
 
+let twitchUtils = TwitchUtils(secrets.twitch.chatBot);
+
 const opts = {
   identity: {
     username: config.twitchUsername,
-    password: config.twitchOAuthPassword
+    password: null
   },
   channels: config.twitchChannels
 };
+
+twitchUtils.getTwitchAuthToken(secrets.twitch.chatBot).then((x) => {
+  opts.identity.password = `oauth:${x.access_token}`;
+  client = new tmi.client(opts);
+
+  client.on('message', onMessageHandler);
+  client.on('connected', onConnectedHandler);
+  client.connect();
+});
 
 // Create a client with our options
 const client = new tmi.client(opts);

@@ -1,0 +1,67 @@
+@font-face {
+	font-family: "PicrewFont";
+	src: url('../../css/tf_machine/ByteBounce.ttf');
+}
+
+#picrew {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	overflow-x: scroll;
+	min-width: 850px;
+}
+
+.options {
+	display: inline-flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+}
+
+#bottomOptions {
+	flex-direction: row;
+}
+
+#bottomOptions .part {
+	margin-right: 10px;
+}
+
+.part {
+	display: inline-flex;
+	flex-flow: column wrap;
+	justify-content: center;
+}
+
+.part p {
+	font-family: "PicrewFont";
+	font-size: 6rem;
+	margin: 0;
+	margin-left: 5px;
+	line-height: .5;
+	text-align: center;
+}
+
+.controls {
+	display: inline-flex;
+	justify-content: center;
+}
+
+.colorBucket {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.leftArrow {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.rightArrow {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.flex-br {
+    width: 100%;
+    height: 0;
+}

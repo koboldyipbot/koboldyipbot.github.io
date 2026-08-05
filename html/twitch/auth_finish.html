@@ -1,0 +1,27 @@
+ <!DOCTYPE html>
+<html>
+<!-- Imports -->
+
+<!-- Our code -->
+<script src="../../js/secrets.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/util.js"></script>
+<!-- <script src="../../js/twitch/utils.js"></script> -->
+<!-- <script src="../../js/twitch/auth.js"></script> -->
+<script src="../../js/twitch/auth_finish.js"></script>
+<body>
+    <div>
+        <p>Paste your randomly generated state below to confirm your authentication.</p>
+        <input style="width: 300px;" type="text" id="twitchState" name="state" autocomplete="off" />
+        <input id="validateButton" type="button" value="Validate State" onclick="validateState()" />
+
+        <div id="authOutput" style="display: none;">
+            <p id="authOutputText"></p>
+            <div id="refreshTokenDiv" style="display: none;">
+            <label id="refreshTokenLabel" for="refreshToken">Refresh Token:<input style="width: 400px;" type="text" id="refreshTokenText" name="refreshToken" readonly="readonly" autocomplete="off" /></label>
+            <input id="copyTokenButton" type="button" value="Copy token" onclick="copyToken()" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>

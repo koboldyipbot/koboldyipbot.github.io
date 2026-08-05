@@ -51,6 +51,7 @@ function createC3YipAudio() {
 
 function resetYipAudio(yipAudio) {
     yipAudio.currentTime = 0;
+    return yipAudio;
 }
 
 
@@ -543,7 +544,7 @@ function detokenizeYipSong(song) {
 }
 
 function setupBaseYipAudio(midiPitch) {
-  var a = baseYip.cloneNode(true);
+  var a = yipBaseAudioPool.getElement();
   a.load();
   a.volume = .1;
   a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
@@ -554,7 +555,7 @@ function setupBaseYipAudio(midiPitch) {
 }
 
 function setupC4YipAudio(midiPitch) {
-  var a = c4Yip.cloneNode(true);
+  var a = yipC4AudioPool.getElement();
   a.load();
   a.volume = .1;
   a.playbackRate = Math.pow(2, (1+((midiPitch-71+11.5)/12)));
@@ -565,7 +566,7 @@ function setupC4YipAudio(midiPitch) {
 }
 
 function setupC3YipAudio(midiPitch) {
-  var a = c3Yip.cloneNode(true);
+  var a = yipC3AudioPool.getElement();
   a.load();
   a.volume = .6;
   a.playbackRate = Math.pow(2, (1+((midiPitch-71+12*2)/12)));

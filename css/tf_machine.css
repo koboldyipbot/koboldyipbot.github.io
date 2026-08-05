@@ -52,8 +52,8 @@
 	margin-left: auto;
 	margin-right: auto;
 	position: relative;
-	left: 110px;
-	top: 490px;
+	left: 180px;
+	top: 535px;
 	scale: 100%;
 	z-index: 2;
 }
@@ -88,7 +88,22 @@
 }
 
 @keyframes tfMachineLaunchUser {
-	from {top: 490px; transform: scale(0.8, 0.8);}
+	from {top: 535px; transform: scale(0.8, 0.8);}
     to {top: -800px; transform: scale(0.8, 2);}
 }
 
+.tfMachineAvatarShirt {
+	position: relative;
+	scale: 0.175;
+	left: -145px;
+	top: 30px;
+	border-radius: 50%;
+}
+
+.tfMachineBucketAvatarShirt {
+	border-radius: 50%;
+}
+
+body {
+	background-color: black;
+}

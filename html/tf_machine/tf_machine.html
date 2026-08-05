@@ -1,0 +1,63 @@
+ <!DOCTYPE html>
+<html>
+<!-- Imports -->
+<script src="../../lib/jquery.js"></script>
+<script src="../../lib/tmi.js"></script>
+<script src="../../lib/matter.min.js"></script>
+
+<!-- Our code -->
+<script src="../../js/commands/modules.js"></script>
+<script src="../../js/commands/parser.js"></script>
+<script src="../../js/secrets.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/util.js"></script>
+<script src="../../js/objectPool.js"></script>
+<script src="../../js/state.js"></script>
+<!-- <script src="../../js/twitch/utils.js"></script> -->
+<script src="../../js/twitch/users.js"></script>
+
+<!-- our modules -->
+<script type="importmap">
+    {
+        "imports": {
+            "twitchChannelPoints": "../../js/twitch/channelPoints.js",
+            "twitchChat": "../../js/twitch/chat.js",
+            "twitchUtils": "../../js/twitch/utils.js",
+            "twitchWebsocket": "../../js/twitch/websocket.js",
+            "tfMachineQueue": "../../js/tf_machine/tf_machine_queue.js",
+            "tfMachineChat": "../../js/tf_machine/tf_machine_chat.js"
+        }
+    }
+</script>
+
+<!-- core code -->
+<script src="../../js/tf_machine/config.js"></script>
+<!-- <script src="../../js/tf_machine/tf_machine_queue.js"></script> -->
+<script type="module" src="../../js/tf_machine/tf_machine.js"></script>
+
+<!-- <link rel="stylesheet" href="css/yip.css"> -->
+<link rel="stylesheet" href="../../css/tf_machine.css">
+<body>
+    
+    <div style="width: 100%; height: 100%; position: absolute; top: 50%;">
+        <div id="debugdiv" style="position: relative; left: 100px; text-align:center; color: white;">
+            <!-- test -->
+        </div>
+    </div>
+    <!-- <div id="canvas">
+        <img id="yip" src="images/yip1.png" />
+        <div id="yip_box">
+        </div>
+    </div> -->
+    <div id="tfMachineCanvas">
+        <div style="display: none;" id="tfMachineInput">
+            <div id="tfMachine">
+                <img class="tfMachineImg" id="tfMachineLayerBack" src="../../images/tf_machine/empty.png" />
+                <img class="tfMachineImg" id="tfMachineLayerFront" src="../../images/tf_machine/empty.png" />
+            </div>
+        </div>
+        <div id="tfMachineOutput">
+        </div>
+    </div>
+</body>
+</html> 
