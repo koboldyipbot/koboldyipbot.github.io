@@ -121,7 +121,7 @@ async function tfMachineStart(user) {
   let imgUrl = await twitchUtils.getTwitchProfilePictureURL(user);
 
   let tfMachineInput = $("#tfMachineInput");
-  let userDiv = $(`<div class="tfUser"><p>${user}</p><img src="${imgUrl}" /></div>`);
+  let userDiv = $(`<div class="tfUserDiv"><p>${user}</p><img src="${imgUrl}" /></div>`);
 
   tfMachineInput.append(userDiv);
   async function doOpen() {
@@ -133,7 +133,7 @@ async function tfMachineStart(user) {
 async function tfMachineOpen(user) {
   let tfMachineImgBack = $("#tfMachineLayerBack");
   let tfMachineImgFront = $("#tfMachineLayerFront");
-  let userDiv = $(".tfUser");
+  let userDiv = $(".tfUserDiv");
 
   // var state = 0;
 
@@ -141,7 +141,7 @@ async function tfMachineOpen(user) {
   //   if (state < 2) {
   //     state += 1;
   //   } else {
-  //     let userDiv = $(".tfUser");
+  //     let userDiv = $(".tfUserDiv");
   //     userDiv[0].removeEventListener("animationend", afterBounce);
   //     tfMachineImgBack[0].src = tfMachineImgMachineWorkingLayerBack;
   //     tfMachineImgFront[0].src = tfMachineImgMachineWorkingLayerFront;
@@ -182,7 +182,7 @@ async function tfMachineOpen(user) {
 async function tfMachineClose(user) {
   let tfMachineImgBack = $("#tfMachineLayerBack");
   let tfMachineImgFront = $("#tfMachineLayerFront");
-  let userDiv = $(".tfUser");
+  let userDiv = $(".tfUserDiv");
   console.log(userDiv);
 
   setTimeout(() => {
@@ -221,7 +221,7 @@ async function tfMachinePushButton(user) {
 async function tfMachineDoYourThang(user) {
   let tfMachineImgBack = $("#tfMachineLayerBack");
   let tfMachineImgFront = $("#tfMachineLayerFront");
-  // let userDiv = $(".tfUser");
+  // let userDiv = $(".tfUserDiv");
 
   let wibbleLooping = true;
   let activeWibbles = [];
@@ -269,7 +269,7 @@ async function tfMachineDoYourThang(user) {
 async function tfMachineExitMachine(user) {
   let tfMachineImgBack = $("#tfMachineLayerBack");
   let tfMachineImgFront = $("#tfMachineLayerFront");
-  let userDiv = $(".tfUser");
+  let userDiv = $(".tfUserDiv");
   let avatar = userDiv[0].getElementsByTagName('img')[0].src;
 
   function spawnTFed(user) {
@@ -354,7 +354,7 @@ async function tfMachineLaunch() {
 //  console.log('exit');
 //   let tfMachineImgBack = $("#tfMachineLayerBack");
 //   let tfMachineImgFront = $("#tfMachineLayerFront");
-//   let userDiv = $(".tfUser");
+//   let userDiv = $(".tfUserDiv");
 //   tfMachineImgBack[0].src = tfMachineImgDoorOpenLayerBack;
 //   tfMachineImgFront[0].src = tfMachineImgDoorOpenLayerFront;
 //   userDiv[0].addEventListener('animationend', (e) => {

@@ -26,7 +26,7 @@
 	z-index: 3;
 }
 
-.tfUser {
+.tfUserDiv {
 	width: fit-content;
 	margin-left: auto;
 	margin-right: auto;
@@ -37,12 +37,12 @@
 	z-index: 2;
 }
 
-.tfUser p {
+.tfUserDiv p {
 	text-align: center;
 	scale: 200%;
 }
 
-.tfUser img {
+.tfUserDiv img {
 	width: 150px;
 	height: 150px;
 }

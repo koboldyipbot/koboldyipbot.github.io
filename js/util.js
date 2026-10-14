@@ -53,3 +53,20 @@ function wwwEncode(paramMap) {
   }
   return data.join('&');
 }
+
+async function listImages(path, imageTypeSet=new Set(["svg"])) {
+  let resp = await fetch(`${window.location.origin}/images/${path}`);
+  let parser = new DOMParser();
+  let text = await resp.text();
+  let html = parser.parseFromString(text, "text/html");
+  let listings = html.getElementsByTagName("a");
+  let ret = [];
+  for (let i = 0; i < listings.length; i++) {
+    let filename = listings[i].textContent;
+    let filenameSplit = filename.split(".");
+    if (imageTypeSet.has(filenameSplit.at(-1).toLowerCase())) {
+      ret.push(filename);
+    }
+  }
+  return ret;
+}
