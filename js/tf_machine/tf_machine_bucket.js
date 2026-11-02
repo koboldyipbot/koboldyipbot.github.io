@@ -2,14 +2,22 @@ import {TwitchChannelPoints} from 'twitchChannelPoints';
 import {TFMachineChat} from 'tfMachineChat';
 import {TFMachineQueue} from 'tfMachineQueue';
 import {getTwitchUtils} from 'twitchUtils';
+import {playAudio} from 'tfMachineUtils';
+import {TFAvatar} from 'tfMachineAvatar';
+import {initialize as SVGUtilsInitialize} from 'svgUtils';
 
 const twitchUtils = getTwitchUtils(secrets.twitch.chatBot);
 
 const tfMachineBucketQueue = new TFMachineQueue(
   'tf_machine_bucket',
   twitchUtils,
-  tfMachineDropUser
+  tfMachineDropUser,
+  null,
+  true,
+  false
 );
+
+window.tfMachineBucketQueue = tfMachineBucketQueue;
 
 const twitchChat = new TFMachineChat(tfMachineBucketQueue);
 
@@ -34,6 +42,7 @@ var DEBUG_ITEM;
 
 const sceneShiftY = 500;
 
+// TODO: remove this
 function matterLoadImages(urls, onSuccess, onError) {
     let imgs = [];
     for (let i = 0; i < urls.length; i++) {
@@ -72,6 +81,9 @@ var matterRunner;
 // var matterDetector;
 
 $('document').ready(function(){
+  SVGUtilsInitialize().then(() => {
+    tfMachineBucketQueue.enabled = true;
+  })
   twitchChat.connect();
     console.debug('initializing physics');
 
@@ -266,7 +278,7 @@ $('document').ready(function(){
 
 });
 
-async function tfMachineDropUser(name) {
+async function tfMachineDropUser(username) {
     let Engine = Matter.Engine,
         Render = Matter.Render,
         Runner = Matter.Runner,
@@ -276,180 +288,193 @@ async function tfMachineDropUser(name) {
         Events = Matter.Events,
         Constraint = Matter.Constraint;
 
-    let avatarBaseUrl = await twitchUtils.getTwitchProfilePictureURL(name);
+    console.log('oh?')
 
-    matterLoadImages(
-        [
-            '../../images/tf_machine/catgirl.png',
-            avatarBaseUrl
-        ],
-        imgs => {
-            let catgirlImg = imgs[0];
-            let avatarImg = imgs[1];
-            let catgirlScale = 0.3;
-            let startX = 258;
-            let startY = -100;
+    let pfpBaseUrl = await twitchUtils.getTwitchProfilePictureURL(username);
+    let tfAvatar = new TFAvatar(username);
+    window.tfAvatar = tfAvatar;
 
-            let startAngle = 0.125 * Math.PI * (Math.random() - 0.5);
+    tfAvatar.interpretCode().then(() => {
+      tfAvatar.renderTFed().then(() => {
+        // tfAvatar.injectToDiv(tfedUserDiv);
+        // tfedUserDiv.appendChild(avatarShirt);
+        console.log('avatar rendered');
+        matterLoadImage(
+          pfpBaseUrl,
+          img => {
+              let tfedImg = tfAvatar.baseImg;
+              let pfpImg = img;
+              let tfedScale = 0.15;
+              let startX = 258;
+              let startY = 100; //-100;
 
-            let hitbox = Bodies.trapezoid(startX, startY, 40, 75, .4,
-                {
-                    // angle: startAngle,
-                    label: `${name}_hitbox`,
-                    slop: 0.1,
-                    mass: 5,
-                    density: .2,
-                    frictionStatic: 1,
-                    friction: 0.3,
-                    restitution: 0.2,
-                    // isStatic: true,
-                    render: {
-                        visible: false,
-                        fillStyle: 'transparent',
-                        strokeStyle: 'black',
-                        lineWidth: 2
-                    }
-                }
-            );
-            // console.log(hitbox.restitution);
-            // console.log(`mass: ${hitbox.mass} -- density: ${hitbox.density}`);
+              let startAngle = 0.125 * Math.PI * (Math.random() - 0.5);
 
-
-            let spriteSize = 100;
-            var spriteHolder = Bodies.rectangle(
-                startX, startY, spriteSize, spriteSize, 
-                { 
-                    label: `catgirl_${name}_sprite`,
-                    // angle: startAngle,
-                    // isStatic: true, 
-                    collisionFilter: {
-                        mask: 0
-                    },
-                    mass: 0,
-                    render: {
-                        // visible: false,
-                        sprite: {
-                            texture: catgirlImg.src,
-                            xScale: catgirlScale,
-                            yScale: catgirlScale
-                        }
-                    }
-                }
-            );
-
-            let avatarScale = 0.06;
-            let tempCanvas = document.createElement('canvas');
-            // document.body.appendChild(tempCanvas);
-            let newWidth = spriteSize * avatarScale;
-            let newHeight = spriteSize * avatarScale;
-            tempCanvas.width = avatarImg.width;
-            tempCanvas.height = avatarImg.height;
-            let ctx = tempCanvas.getContext("2d");
-
-            ctx.drawImage(avatarImg, 0, 0, avatarImg.width, avatarImg.height);
-
-            let oldGlobalCompositeOperation = ctx.globalCompositeOperation;
-            ctx.globalCompositeOperation = 'destination-in';
-            ctx.beginPath();
-            ctx.arc(avatarImg.width/2, avatarImg.width/2, avatarImg.width/2, 0, Math.PI*2);
-            ctx.closePath();
-            ctx.fill();
-
-            let newAvatarUrl = tempCanvas.toDataURL('image/png'); // about:config: privacy.resistFingerprinting needs to be false
+              let hitbox = Bodies.trapezoid(startX, startY, 40, 75, .4,
+                  {
+                      // angle: startAngle,
+                      label: `${username}_hitbox`,
+                      slop: 0.1,
+                      mass: 5,
+                      density: .2,
+                      frictionStatic: 1,
+                      friction: 0.3,
+                      restitution: 0.2,
+                      // isStatic: true,
+                      render: {
+                          visible: false,
+                          fillStyle: 'transparent',
+                          strokeStyle: 'black',
+                          lineWidth: 2
+                      }
+                  }
+              );
+              // console.log(hitbox.restitution);
+              // console.log(`mass: ${hitbox.mass} -- density: ${hitbox.density}`);
 
 
-            var avatarHolder = Bodies.circle(
-                startX, startY, newWidth,
-                { 
-                    label: `catgirl_${name}_avatar`,
-                    // angle: startAngle,
-                    // isStatic: true, 
-                    collisionFilter: {
-                        mask: 0
-                    },
-                    mass: 0,
-                    render: {
-                        // visible: false,
-                        sprite: {
-                            texture: avatarImg.src,
-                            xScale: avatarScale,
-                            yScale: avatarScale
-                        }
-                    }
-                }
-            );
+              let spriteSize = 100;
+              var spriteHolder = Bodies.rectangle(
+                  startX, startY, spriteSize, spriteSize, 
+                  { 
+                      label: `tfed_${username}_sprite`,
+                      // angle: startAngle,
+                      // isStatic: true, 
+                      collisionFilter: {
+                          mask: 0
+                      },
+                      mass: 0,
+                      render: {
+                          // visible: false,
+                          sprite: {
+                              texture: tfedImg.src,
+                              xScale: tfedScale,
+                              yScale: tfedScale
+                          }
+                      }
+                  }
+              );
 
-            let constraintHitbox1 = Constraint.create({
-                bodyA: hitbox,
-                pointA: {x: 0, y: 10},
-                bodyB: spriteHolder,
-                pointB: {x: 0, y: 40},
-                length: 0,
-                stiffness: 1,
-                render: {
-                    visible: false
-                }
-            });
-            let constraintHitbox2 = Constraint.create({
-                bodyA: hitbox,
-                pointA: {x: 0, y: -10},
-                bodyB: spriteHolder,
-                pointB: {x: 0, y: -10},
-                length: 0,
-                stiffness: 1,
-                render: {
-                    visible: false
-                }
-            });
+              window.tfAvatar = tfAvatar;
+              tfAvatar.registerMatterSprite(spriteHolder.render.sprite);
 
-            let constraintAvatar1 = Constraint.create({
-                bodyA: spriteHolder,
-                pointA: {x: 1, y: 17},
-                bodyB: avatarHolder,
-                pointB: {x: 0, y: 0},
-                length: 0,
-                // damping: 0.2,
-                stiffness: 1,
-                render: {
-                    visible: false
-                }
-            })
+              let pfpScale = 0.06;
+              let tempCanvas = document.createElement('canvas');
+              // document.body.appendChild(tempCanvas);
+              let newWidth = spriteSize * pfpScale;
+              let newHeight = spriteSize * pfpScale;
+              tempCanvas.width = pfpImg.width;
+              tempCanvas.height = pfpImg.height;
+              let ctx = tempCanvas.getContext("2d");
 
-            let constraintAvatar2 = Constraint.create({
-                bodyA: spriteHolder,
-                pointA: {x: 1, y: 27},
-                bodyB: avatarHolder,
-                pointB: {x: 0, y: 5},
-                length: 0,
-                // damping: 0.2,
-                stiffness: 1,
-                render: {
-                    visible: false
-                }
-            })
+              ctx.drawImage(pfpImg, 0, 0, pfpImg.width, pfpImg.height);
 
-            var catgirlMain = Composite.create({
-                label: `catgirl_${name}`,
-                bodies: [spriteHolder, avatarHolder, hitbox],
-                constraints: [constraintHitbox1, constraintHitbox2, constraintAvatar1, constraintAvatar2]
-            });
+              let oldGlobalCompositeOperation = ctx.globalCompositeOperation;
+              ctx.globalCompositeOperation = 'destination-in';
+              ctx.beginPath();
+              ctx.arc(pfpImg.width/2, pfpImg.width/2, pfpImg.width/2, 0, Math.PI*2);
+              ctx.closePath();
+              ctx.fill();
 
-            // let group = Composite.create({label: `catgirl_${name}`});
-            // Composite.add(group, [spriteHolder, avatarHolder, catgirlMain, constraintHitbox1, constraintHitbox2, constraintAvatar1, constraintAvatar2]);
+              let newPFPUrl = tempCanvas.toDataURL('image/png'); // about:config: privacy.resistFingerprinting needs to be false
 
-            // matterDetector.setBodies = matterDetector.bodies.concat([hitbox]);
-            Composite.add(matterEngine.world, catgirlMain);
-            Body.rotate(hitbox, startAngle, null, true);
-            tfMachineAudioFalling.play();
-            setTimeout(() => {
-                hitbox.restitution = 0;
-                // Body.setDensity(hitbox, 0.8);
-                // Body.setInertia(hitbox, 100000);
-            }, 600);
-            // Composite.add(matterEngine.world, [catgirlSprite]);
-        },
-        (url) => {
-            console.log(`Error somewhere loading image: ${url}`);
-        }
-    );
+
+              var pfpHolder = Bodies.circle(
+                  startX, startY, newWidth,
+                  { 
+                      label: `tfed_${username}_pfp`,
+                      // angle: startAngle,
+                      // isStatic: true, 
+                      collisionFilter: {
+                          mask: 0
+                      },
+                      mass: 0,
+                      render: {
+                          // visible: false,
+                          sprite: {
+                              texture: newPFPUrl, //pfpImg.src,
+                              xScale: pfpScale,
+                              yScale: pfpScale
+                          }
+                      }
+                  }
+              );
+
+              let constraintHitbox1 = Constraint.create({
+                  bodyA: hitbox,
+                  pointA: {x: 0, y: 10},
+                  bodyB: spriteHolder,
+                  pointB: {x: -10, y: 40},
+                  length: 0,
+                  stiffness: 1,
+                  render: {
+                      visible: false
+                  }
+              });
+              let constraintHitbox2 = Constraint.create({
+                  bodyA: hitbox,
+                  pointA: {x: 0, y: -10},
+                  bodyB: spriteHolder,
+                  pointB: {x: -10, y: -10},
+                  length: 0,
+                  stiffness: 1,
+                  render: {
+                      visible: false
+                  }
+              });
+
+              let constraintPFP1 = Constraint.create({
+                  bodyA: spriteHolder,
+                  pointA: {x: 1-12, y: 17-3},
+                  bodyB: pfpHolder,
+                  pointB: {x: 0, y: 0},
+                  length: 0,
+                  // damping: 0.2,
+                  stiffness: 1,
+                  render: {
+                      visible: false
+                  }
+              })
+
+              let constraintPFP2 = Constraint.create({
+                  bodyA: spriteHolder,
+                  pointA: {x: 1-12, y: 27-3},
+                  bodyB: pfpHolder,
+                  pointB: {x: 0, y: 5},
+                  length: 0,
+                  // damping: 0.2,
+                  stiffness: 1,
+                  render: {
+                      visible: false
+                  }
+              })
+
+              var tfedMain = Composite.create({
+                  label: `tfed_${username}`,
+                  bodies: [spriteHolder, pfpHolder, hitbox],
+                  constraints: [constraintHitbox1, constraintHitbox2, constraintPFP1, constraintPFP2]
+              });
+
+              // let group = Composite.create({label: `catgirl_${username}`});
+              // Composite.add(group, [spriteHolder, pfpHolder, catgirlMain, constraintHitbox1, constraintHitbox2, constraintPFP1, constraintPFP2]);
+
+              // matterDetector.setBodies = matterDetector.bodies.concat([hitbox]);
+              Composite.add(matterEngine.world, tfedMain);
+              Body.rotate(hitbox, startAngle, null, true);
+              playAudio(tfMachineAudioFalling);
+              setTimeout(() => {
+                  hitbox.restitution = 0;
+                  // Body.setDensity(hitbox, 0.8);
+                  // Body.setInertia(hitbox, 100000);
+              }, 600);
+              // Composite.add(matterEngine.world, [catgirlSprite]);
+          },
+          (url) => {
+              console.log(`Error somewhere loading image: ${url}`);
+          }
+      );
+      });
+    });
 }
+
+window.tfMachineDropUser = tfMachineDropUser;

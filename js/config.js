@@ -17,9 +17,9 @@ const config = {
     twitchStreamer: "kobold_wyx",
     yipOffsetLeft: 80,
     yipOffsetTop: 0,
-    // mods: [
-    //     "kobold_wyx", "yip_bot"
-    // ],
+    mods: [
+        "kobold_wyx", "yip_bot"
+    ],
     rpg: {
         fightCooldown: 1 * 60, // seconds
         maxXPPerLevel: 100000,
@@ -35,18 +35,35 @@ const config = {
             relics: true
         },
     },
-    twitchAuthScopes: [
-      "bits:read",
-      "moderation:read",
-      "moderator:read:chatters",
-      "moderator:read:followers",
-      "moderator:read:moderators",
-      "user:read:chat",
-      "user:read:email",
-      "user:write:chat",
-      "channel:bot",
-      "user:bot",
-      "channel:read:redemptions",
-      "channel:read:subscriptions"
-    ]
+    twitchAuthScopes: {
+        chatBot: [
+          "bits:read",
+          "moderation:read",
+          "moderator:read:chatters",
+          "moderator:read:followers",
+          "moderator:read:moderators",
+          "user:read:chat",
+          "user:read:email",
+          "user:write:chat",
+          "channel:bot",
+          "user:bot",
+          "channel:read:redemptions",
+          "channel:read:subscriptions"
+        ],
+        streamer: [
+          "bits:read",
+          "moderation:read",
+          "moderator:read:chatters",
+          "moderator:read:followers",
+          "moderator:read:moderators",
+          "user:read:chat",
+          "user:read:email",
+          "user:write:chat",
+          "channel:bot",
+          "user:bot",
+          "channel:read:redemptions",
+          "channel:manage:redemptions",
+          "channel:read:subscriptions"
+        ]
+    }
 };

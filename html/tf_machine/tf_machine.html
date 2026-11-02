@@ -3,6 +3,7 @@
 <!-- Imports -->
 <script src="../../lib/jquery.js"></script>
 <script src="../../lib/tmi.js"></script>
+<script src="../../lib/jsrand.min.js"></script>
 <script src="../../lib/matter.min.js"></script>
 
 <!-- Our code -->
@@ -20,10 +21,15 @@
 <script type="importmap">
     {
         "imports": {
+            "userConfig": "../../js/tf_machine/user_config.js",
             "twitchChannelPoints": "../../js/twitch/channelPoints.js",
             "twitchChat": "../../js/twitch/chat.js",
             "twitchUtils": "../../js/twitch/utils.js",
             "twitchWebsocket": "../../js/twitch/websocket.js",
+            "tfMachineBase": "../../js/tf_machine/base.js",
+            "svgUtils": "../../js/tf_machine/svg_utils.js",
+            "tfMachineUtils": "../../js/tf_machine/tf_machine_utils.js",
+            "tfMachineAvatar": "../../js/tf_machine/avatar.js",
             "tfMachineQueue": "../../js/tf_machine/tf_machine_queue.js",
             "tfMachineChat": "../../js/tf_machine/tf_machine_chat.js"
         }
@@ -36,7 +42,7 @@
 <script type="module" src="../../js/tf_machine/tf_machine.js"></script>
 
 <!-- <link rel="stylesheet" href="css/yip.css"> -->
-<link rel="stylesheet" href="../../css/tf_machine.css">
+<link rel="stylesheet" href="../../css/tf_machine/tf_machine.css">
 <body>
     
     <div style="width: 100%; height: 100%; position: absolute; top: 50%;">

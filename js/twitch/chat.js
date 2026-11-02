@@ -23,7 +23,7 @@ export class TwitchChat {
   }
 
   async connect() {
-    this.websocketHelper.rebuildWebsocket();
+    return await this.websocketHelper.rebuildWebsocket();
   }
 
   async sendMessage(msg) {
@@ -52,6 +52,10 @@ export class TwitchChat {
         return resp;
       }
     );
+  }
+
+  isMod(username) {
+
   }
 
   async onOpenFunc(e) {

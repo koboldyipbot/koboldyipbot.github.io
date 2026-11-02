@@ -1,4 +1,17 @@
-class TwitchUtils {
+export class TwitchUtils {
+
+  // warning: changing the order of these characters in the list WILL affect rng generation of other modules.
+  // Twitch username valid characters: a-z, 0-9, _
+  // Maps each character to an integer value for math uniqueness lookups.
+  static VALID_USERNAME_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789_';
+  static VALID_USERNAME_CHARACTERS_INDEX_MAP = (() => {
+    let ret = {};
+    for (let i in TwitchUtils.VALID_USERNAME_CHARACTERS) {
+      ret[TwitchUtils.VALID_USERNAME_CHARACTERS[i]] = i;
+    }
+    return ret;
+  })();
+
   /*
     Use login name for distinguishing users
   */
@@ -9,6 +22,18 @@ class TwitchUtils {
     this.moderatorCache = {
       timestamp: null, users: new Set()
     };
+  }
+
+  // Condenses a username down to a unique integer
+  static interpolateUsernameToSeed(username) {
+    let seed = 0;
+    let mult = 1;
+    let lowerUsername = username.toLowerCase();
+    for (let i in lowerUsername) {
+      seed += (TwitchUtils.VALID_USERNAME_CHARACTERS_INDEX_MAP[lowerUsername[i]]+1) * mult;
+      mult = mult * TwitchUtils.VALID_USERNAME_CHARACTERS.length;
+    }
+    return seed;
   }
 
   async getTwitchAuthToken(authAttempts = 0) {

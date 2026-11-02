@@ -27,7 +27,6 @@ export function getRandomPart(category, color, furColor) {
 }
 
 
-
 export async function initialize() {
   console.log('initializing SVGs');
   if (BASE_SVGS.length === 0) {
@@ -111,8 +110,7 @@ function generateColorChanges(newSvg, colorReplacementMap) {
 }
 
 export function getPart(category, fileNumber, color, furColor = null) {
-  // console.log(`getPart: ${category} -- furColor: ${furColor}`);
-  let svg = BASE_SVGS[category].parts[fileNumber-1];
+  let svg = BASE_SVGS[category].parts[fileNumber - 1];
   let newSvg = svg.cloneNode(true); // deep copy so we can modify color
 
   let colorReplacements = TFMachineBase.ColorRamp.getColorRampReplacements(category, color);
@@ -183,7 +181,7 @@ export function getMenuPartImage(topCategory, fileNumber, color, furColor) {
   let doOnload = (ctx, img) => {
     rendersCompleted += 1;
     if (rendersCompleted === baseCategories.length) {
-      imgRender.src = canvas.toDataURL('image/png');
+      imgRender.src = ctx.canvas.toDataURL('image/png');
     }
   }
 
@@ -217,6 +215,7 @@ export function drawSVGOnCanvas(svg, ctx, doOnload) {
   img.onload = function() {
     ctx.drawImage(img, TFMachineBase.CANVAS_ASEPRITE_DX, TFMachineBase.CANVAS_ASEPRITE_DY); // 0, 0);
     URL.revokeObjectURL(url);
+    window.lastCTX = ctx;
     doOnload(ctx, img);
   };
   img.src = url;

@@ -24,7 +24,7 @@ var twitchEventMessageHandlers = {};
 var twitchMessageIdCache = {};
 
 
-const twitchEventScopes = config.twitchAuthScopes.map(encodeURIComponent).join("+");
+const twitchEventScopes = config.twitchAuthScopes.streamer.map(encodeURIComponent).join("+");
 
 const channelPointWebsocketEventSubscriptions = {
   "channel.channel_points_custom_reward_redemption.add": {

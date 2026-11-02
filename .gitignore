@@ -1,2 +1,6 @@
 *.DS_Store
 js/secrets.js
+managed/*
+!managed/README
+dist/*
+!dist/README

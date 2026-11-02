@@ -3,7 +3,7 @@
 <!-- Imports -->
 <script src="lib/jquery.js"></script>
 <script src="lib/tmi.js"></script>
-<script src="lib/lzstring.min.js"></script>
+<!-- <script src="lib/lzstring.min.js"></script> -->
 <script src="lib/matter.min.js"></script>
 
 <!-- Our code -->
@@ -12,17 +12,29 @@
 <script src="js/util.js"></script>
 <script src="js/objectPool.js"></script>
 <script src="js/state.js"></script>
-<script src="js/twitch/utils.js"></script>
-<script src="js/twitch/events.js"></script>
-<script src="js/twitch/users.js"></script>  
+<!-- <script src="js/twitch/utils.js"></script> -->
+<!-- <script src="js/twitch/events.js"></script> -->
+<!-- <script src="js/twitch/users.js"></script>   -->
+<script type="importmap">
+    {
+        "imports": {
+            "twitchChannelPoints": "../../js/twitch/channelPoints.js",
+            "twitchChat": "../../js/twitch/chat.js",
+            "twitchUtils": "../../js/twitch/utils.js",
+            "twitchEvents": "../../js/twitch/utils.js",
+            "twitchUsers": "../../js/twitch/users.js",
+            "twitchWebsocket": "../../js/twitch/websocket.js"
+        }
+    }
+</script>
 
-<!-- <script src="js/yip.js"></script> -->
+<script src="js/yip.js"></script>
 <!-- <script src="js/raffle.js"></script> -->
 <!-- <script src="js/rpg.js"></script> -->
 <!-- <script src="js/warframe/relics.js"></script> -->
-<script src="js/tf_machine/tf_machine.js"></script>
-<script src="js/tf_machine/tf_machine_bucket.js"></script>
-<script src="js/main.js"></script>
+<!-- <script src="js/tf_machine/tf_machine.js"></script> -->
+<!-- <script src="js/tf_machine/tf_machine_bucket.js"></script> -->
+<script type="module" src="js/main.js"></script>
 
 <link rel="stylesheet" href="css/yip.css">
 <link rel="stylesheet" href="css/tf_machine.css">
@@ -33,12 +45,12 @@
             <!-- test -->
         </div>
     </div>
-    <!-- <div id="canvas">
+    <div id="canvas">
         <img id="yip" src="images/yip1.png" />
         <div id="yip_box">
         </div>
-    </div> -->
-    <div id="tfMachineCanvas">
+    </div>
+    <!-- <div id="tfMachineCanvas">
         <div style="display: none;" id="tfMachineInput">
             <div id="tfMachine">
                 <img class="tfMachineImg" id="tfMachineLayerBack" src="images/tf_machine/empty.png" />
@@ -47,6 +59,6 @@
         </div>
         <div id="tfMachineOutput">
         </div>
-    </div>
+    </div> -->
 </body>
 </html> 

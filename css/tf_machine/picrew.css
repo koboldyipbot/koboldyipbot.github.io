@@ -1,14 +1,110 @@
+html, body {
+	height: 99%;
+}
+
+html, body {
+	margin-bottom: 0;
+}
+
+#code {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+}
+
+#code * {
+	font-family: "PicrewFont";
+}
+
+#codeCopy {
+	font-size: max(16px, 3.5vw);
+	width: 5vw;
+	border: 5px solid black;
+	width: max(60px, 7vw);
+	text-align: center;
+	line-height: 2vw;
+}
+
+#codeCopy:hover {
+	background-color: #e0ebeb;
+}
+
+#codeText {
+	font-size: max(28px, 3.8vw);
+	width: max(calc(530px), 71vw);
+	padding-left: 5px;
+}
+
+
+#alerts {
+	position: absolute;
+	width: 20%;
+	min-width: 300px;
+	display: flex;
+	flex-flow: column nowrap;
+	border: 2px solid black;
+	background-color: white;
+	z-index: 100;
+	max-height: 90%;
+	overflow-y: scroll;
+}
+
+#alerts:empty {
+	display: none;
+}
+
+.alert {
+	border: 2px solid black;
+	border-radius: 10px;
+	width: 95%;
+	flex: 0 0 100%;
+}
+
+.alert * {
+	font-size: max(16px, min(4vw, 50px));
+}
+
+.alert p {
+	font-family: "PicrewFont";
+	margin: 5px;
+	overflow-wrap: break-word;
+	word-break: break-word;
+	line-height: max(16px, min(2vw, 50px));
+}
+
+.alertTitle {
+	text-decoration: underline;
+}
+
+.alertCloseButton {
+	float: right;
+	margin-left: 1vw;
+	margin-right: 1vw;
+}
+
 @font-face {
 	font-family: "PicrewFont";
 	src: url('../../css/tf_machine/ByteBounce.ttf');
 }
 
-#picrew {
+#topHalf {
+	min-width: 100%;
+	height: auto;
+	/*max-height: 60vh;*/
 	display: flex;
-	flex-wrap: wrap;
+	flex-flow: row wrap;
+	align-items: center;
 	justify-content: center;
-	overflow-x: scroll;
-	min-width: 850px;
+	margin-top: 5px;
+}
+
+#picrew {
+	min-height: 50vw;
+	height: 100%;
+	display: flex;
+	flex-wrap: column nowrap;
+	align-content: baseline;
+	flex-direction: column;
 }
 
 .options {
@@ -18,12 +114,32 @@
 	align-items: center;
 }
 
+#leftOptions {
+	flex-basis: 15%;
+}
+
+#rightOptions {
+	flex-basis: 15%;
+}
+
+.padControls {
+	flex-basis: auto;
+	flex-shrink: 4;
+}
+
+#bottomOptionsWrapper {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
 #bottomOptions {
-	flex-direction: row;
+	flex-flow: row nowrap;
+	align-items: baseline;
 }
 
 #bottomOptions .part {
-	margin-right: 10px;
+	/*margin-right: 10px;*/
 }
 
 .part {
@@ -35,7 +151,7 @@
 
 .part p {
 	font-family: "PicrewFont";
-	font-size: 6rem;
+	font-size: 4vw;
 	margin: 0;
 	margin-left: 5px;
 	line-height: .5;
@@ -45,23 +161,42 @@
 .controls {
 	display: inline-flex;
 	justify-content: center;
+	align-items: center;
+	min-height: calc(2vw+30px);
+}
+
+.controls * {
+	min-width: 25px;
+	min-height: 25px;
+	width: 2vw;
+	height: 2vw;
 }
 
 .colorBucket {
     /*margin-left: 5px;*/
     /*margin-right: 10px;*/
-    height: 45px;
     padding-top: 5px;
     padding-bottom: 5px;
+    z-index: 10;
+    height: calc(3vw * 45 / 55);
+    width: 3vw;
+    padding-left: calc(3vw * 5 / 55);
+    padding-right: calc(3vw * 5 / 55);
 }
 
 .leftArrow, .rightArrow {
 	margin-top: auto;
 	margin-bottom: auto;
 	padding: 15px;
+	z-index: 10;
 	/*padding-bottom: 15px;*/
 	/*padding-left: 10px;*/
 }
+
+/*.fakeArrow {
+	width: 0;
+	min-width: 0;
+}*/
 
 /*.rightArrow {
 	margin-top: auto;
@@ -74,28 +209,42 @@
 }
 
 #character {
+	flex-basis: 30%;
 	margin-left: 20px;
 	margin-right: 20px;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 
-#partPicker {
+.picrewCharacter {
+	width: 20vw;
+	min-width: 200px;
+}
+
+#partPicker  {
 	border: 2px solid black;
 	border-radius: 10px;
-	min-width: 100%;
-	max-width: 100%;
-	min-height: 200px;
-	margin-top: 20px;
-	display: flex;
-	flex-flow: row wrap;
+	max-width: 99%;
+	min-height: max(120px, 8vw);
+	width: 100vw;
+	overflow-y: scroll;
 }
 
-/*#partPickerItems {
-
-}*/
+#partPickerItems {
+	display: grid;
+	align-content: baseline;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 97%;
+}
 
 .partPickerItem {
-	max-width: 16vw;
-	max-height: 16vw;
+	max-width: 8vw;
+	max-height: 8vw;
+	min-width: 120px;
+	min-height: 120px;
 	border-right: 3px solid black;
 	border-bottom: 3px solid black;
 	border-radius: 10px;
@@ -111,7 +260,13 @@
 .partPickerWindow {
 	max-width: 90%;
 	max-height: 90%;
+	width: ;
 	overflow: hidden;
+}
+
+.furColorPicker {
+	min-width: 90%;
+	min-height: 90%;
 }
 
 .partPickerWindow img {
@@ -137,9 +292,9 @@
 }
 
 .mouthMenu {
-	width: 150%;
-	margin-top: -25%;
-	left: -5%;
+	width: 250%;
+	margin-top: -70%;
+	left: -35%;
 }
 
 .shirtMenu {
@@ -184,7 +339,7 @@
 	left: -15%;
 }
 
-p {
+.part p, img, .alertCloseButton, #codeCopy {
 	-webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

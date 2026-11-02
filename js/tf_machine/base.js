@@ -95,18 +95,19 @@ export class ColorRamp {
       let ramp = [];
       for (let j = 0; j < baseRamp.length; j++) {
         
-        let baseColor = new ColorRampElement(baseRamp[j], colorNumber);
+        let baseColor = new ColorRampElement(baseRamp[j]);
         let shadeColor = ramp[j-1];
         if (shadeColor !== undefined) {
           shadeColor.next = baseColor;
           baseColor.prev = shadeColor;
         }
         ColorRamp.colorRampMap[baseColor.color] = baseColor;
-        if (j > 0) {
+        if (j > 0) { // reserved shades are excluded from ColorNumbers since they are not pickable
           ColorRamp.pickableColorList.push(baseColor);
+          baseColor.colorNumber = colorNumber;
+          colorNumber += 1;
         }
         ramp.push(baseColor);
-        colorNumber += 1;
       }
       ramp[0].prev = ramp[ramp.length-1];
       ramp[ramp.length-1].next = ramp[0];
@@ -118,7 +119,7 @@ export class ColorRamp {
   static colorNumberLookup = (() => {
     let lookup = [];
     for (let i = 0; i < ColorRamp.colorRampBaseList.length; i++) {
-      let ramp = ColorRamp.colorRampBaseList;
+      let ramp = ColorRamp.colorRampBaseList.slice(1); // exclude shade-only colors
       lookup = lookup.concat(ramp[i]);
     }
     return lookup;
@@ -178,19 +179,19 @@ export class ColorRamp {
 
   static getColorFromColorNumber(category, colorNumber) {
     let colorRampElement = ColorRamp.getBaseCategoryColorRampElement(category);
-    let saneColorNumber = (colorRampElement.colorNumber + colorNumber) % ColorRamp.colorList.length;
-    return ColorRamp.colorList[saneColorNumber].color;
+    let saneColorNumber = (colorRampElement.colorNumber + colorNumber) % ColorRamp.pickableColorList.length;
+    return ColorRamp.pickableColorList[saneColorNumber].color;
   }
 
   static getColorNumberCodeFromColor(category, color) {
     let baseColorRampElement = ColorRamp.getBaseCategoryColorRampElement(category);
     let colorRampElement = ColorRamp.colorRampMap[color];
     // differs based on category - relative colorNumber is 0 for code generation purposes
-    return (colorRampElement.colorNumber - baseColorRampElement.colorNumber) % ColorRamp.colorList.length;
+    return (ColorRamp.pickableColorList.length + colorRampElement.colorNumber - baseColorRampElement.colorNumber) % ColorRamp.pickableColorList.length;
   }
 
-  static getRandomColor() {
-    let colorElement = ColorRamp.pickableColorList[Math.floor(Math.random() * ColorRamp.pickableColorList.length)];
+  static getRandomColor(randomFunc=Math.random) {
+    let colorElement = ColorRamp.pickableColorList[Math.floor(randomFunc() * ColorRamp.pickableColorList.length)];
     return colorElement.color;
   }
 }

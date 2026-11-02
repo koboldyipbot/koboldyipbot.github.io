@@ -544,7 +544,13 @@ function detokenizeYipSong(song) {
 }
 
 function setupBaseYipAudio(midiPitch) {
-  var a = yipBaseAudioPool.getElement();
+  var aObj = yipBaseAudioPool.getElement();
+  var a = aObj.data;
+  function release() {
+    yipBaseAudioPool.releaseElement(aObj);
+    a.removeEventListener('ended', release, false);
+  }
+  a.addEventListener('ended', release, false);
   a.load();
   a.volume = .1;
   a.playbackRate = Math.pow(2, (1+((midiPitch-70)/12)));
@@ -555,7 +561,13 @@ function setupBaseYipAudio(midiPitch) {
 }
 
 function setupC4YipAudio(midiPitch) {
-  var a = yipC4AudioPool.getElement();
+  var aObj = yipC4AudioPool.getElement();
+  var a = aObj.data;
+  function release() {
+    yipC4AudioPool.releaseElement(aObj);
+    a.removeEventListener('ended', release, false);
+  }
+  a.addEventListener('ended', release, false);
   a.load();
   a.volume = .1;
   a.playbackRate = Math.pow(2, (1+((midiPitch-71+11.5)/12)));
@@ -566,7 +578,13 @@ function setupC4YipAudio(midiPitch) {
 }
 
 function setupC3YipAudio(midiPitch) {
-  var a = yipC3AudioPool.getElement();
+  var aObj = yipC3AudioPool.getElement();
+  var a = aObj.data;
+  function release() {
+    yipC3AudioPool.releaseElement(aObj);
+    a.removeEventListener('ended', release, false);
+  }
+  a.addEventListener('ended', release, false);
   a.load();
   a.volume = .6;
   a.playbackRate = Math.pow(2, (1+((midiPitch-71+12*2)/12)));

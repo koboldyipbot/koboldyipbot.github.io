@@ -2,18 +2,23 @@
 <html>
 <!-- Imports -->
 <script src="../../lib/jquery.js"></script>
+<script src="../../lib/jsrand.min.js"></script>
 
 <!-- Our code -->
 <script src="../../js/config.js"></script>
 <script src="../../js/util.js"></script>
 
 
+
 <script type="importmap">
     {
         "imports": {
+            "userConfig": "../../js/tf_machine/user_config.js",
             "tfMachineBase": "../../js/tf_machine/base.js",
             "svgUtils": "../../js/tf_machine/svg_utils.js",
-            "tfMachineUtils": "../../js/tf_machine/tf_machine_utils.js"
+            "tfMachineUtils": "../../js/tf_machine/tf_machine_utils.js",
+            "tfMachineAvatar": "../../js/tf_machine/avatar.js",
+            "twitchUtils": "../../js/twitch/utils.js"
         }
     }
 </script>
@@ -25,142 +30,160 @@
 <link rel="stylesheet" href="../../css/tf_machine/character.css">
 <body>
     
-    <div style="width: 100%; height: 100%; position: absolute; top: 50%;">
+    <!--div style="width: 100%; height: 100%; position: absolute; top: 50%;">
         <div id="debugdiv" style="position: relative; left: 100px; text-align:center; color: white;">
-            <!-- test -->
+            test
         </div>
-    </div>
+    </div-->
+    <div id="alerts"></div>
     <div id="picrew">
-        <div class="options" id="leftOptions">
-            <div class="part" id="ears">
-                <!-- <img src="/images/tf_machine/picrew/ears.png" /> -->
-                <p>Ears</p>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+        <div id="code">
+                <input id="codeText" type="text" />
+                <div id="codeCopy">Copy Code</div>
+            </div>
+        <div id="topHalf">
+            <div class="padControls"></div>
+            <div class="options" id="leftOptions">
+                <div class="part" id="ears">
+                    <!-- <img src="/images/tf_machine/picrew/ears.png" /> -->
+                    <p>Ears</p>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
+                </div>
+                <div class="part" id="hair">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/hair.png" /> -->
+                        <p>Hair</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
+                </div>
+                <div class="part" id="eyes">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/eyes.png" /> -->
+                        <p>Eyes</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
+                </div>
+                <div class="part" id="mouth">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/mouth.png" /> -->
+                        <p>Mouth</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
                 </div>
             </div>
-            <div class="part" id="hair">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/hair.png" /> -->
-                    <p>Hair</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
-                </div>
-            </div>
-            <div class="part" id="eyes">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/eyes.png" /> -->
-                    <p>Eyes</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
-                </div>
-            </div>
-            <div class="part" id="mouth">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/mouth.png" /> -->
-                    <p>Mouth</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
-                </div>
-            </div>
-        </div>
-        <div id="character">
+            <div id="character">
 
-            <!-- <img src="/images/tf_machine/catgirl.png" /> -->
+                <!-- <img src="/images/tf_machine/catgirl.png" /> -->
+            </div>
+            <div class="options" id="rightOptions">
+                <div class="part" id="shirt">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/shirt.png" /> -->
+                        <p>Shirt</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
+                </div>
+                <div class="part" id="sleeves">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/sleeves.png" /> -->
+                        <p>Sleeves</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
+                </div>
+                <div class="part" id="pants">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/pants.png" /> -->
+                        <p>Pants</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
+                </div>
+                <div class="part" id="feet">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/shoes.png" /> -->
+                        <p>Feet</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
+                </div>
+            </div>
+            <div class="padControls"></div>
+            <div class="flex-br"><br /></div>
         </div>
-        <div class="options" id="rightOptions">
-            <div class="part" id="shirt">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/shirt.png" /> -->
-                    <p>Shirt</p>
+        <div id="bottomOptionsWrapper">
+            <div class="options" id="bottomOptions">
+                <div class="part" id="blink">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/tail.png" /> -->
+                        <p>Blink</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
                 </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                <div class="part" id="tail">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/tail.png" /> -->
+                        <p>Tail</p>
+                    </div>
+                    <div class="controls">
+                        <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                    </div>
                 </div>
-            </div>
-            <div class="part" id="sleeves">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/sleeves.png" /> -->
-                    <p>Sleeves</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
-                </div>
-            </div>
-            <div class="part" id="pants">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/pants.png" /> -->
-                    <p>Pants</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
-                </div>
-            </div>
-            <div class="part" id="feet">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/shoes.png" /> -->
-                    <p>Feet</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
+                <div class="part" id="fur">
+                    <div>
+                        <!-- <img src="/images/tf_machine/picrew/tail.png" /> -->
+                        <p>Fur</p>
+                    </div>
+                    <div class="controls">
+                        <div class="leftArrow fakeArrow"></div>
+                        <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
+                        <div class="rightArrow fakeArrow"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="flex-br"><br /></div>
-        <div class="options" id="bottomOptions">
-            <div class="part" id="blink">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/tail.png" /> -->
-                    <p>Blink</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
-                </div>
-            </div>
-            <div class="part" id="tail">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/tail.png" /> -->
-                    <p>Tail</p>
-                </div>
-                <div class="controls">
-                    <img class="leftArrow" src="/images/tf_machine/picrew/left_arrow.png" />
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                    <img class="rightArrow" src="/images/tf_machine/picrew/right_arrow.png" />
-                </div>
-            </div>
-            <div class="part" id="fur">
-                <div>
-                    <!-- <img src="/images/tf_machine/picrew/tail.png" /> -->
-                    <p>Fur</p>
-                </div>
-                <div class="controls">
-                    <img class="colorBucket" src="/images/tf_machine/picrew/bucket.png" />
-                </div>
-            </div>
+
+        <!-- <div class="flex-br"><br /></div> -->
+        <div id="partPicker">
+            <!-- <div class="partPickerPadder"></div> -->
+            <div id="partPickerItems"></div>
+            <!-- <div class="partPickerPadder"></div> -->
         </div>
-        <div class="flex-br"><br /></div>
-        <div id="partPicker"></div>
     </div>
 </body>
 </html> 

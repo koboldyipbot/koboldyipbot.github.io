@@ -56,7 +56,7 @@ function beginAuthentication(formData) {
 		response_type: 'code',
 		client_id: secrets.twitch[formData.accountType.value].clientID,
 		redirect_uri: window.location.href.replace("127.0.0.1", "localhost").replace('auth_start.html', 'auth_finish.html'),
-		scope: config.twitchAuthScopes.join(' '),
+		scope: config.twitchAuthScopes[formData.accountType.value].join(' '),
 		state: `${formData.accountType.value}--${formData.state.value}`
 	};
 
