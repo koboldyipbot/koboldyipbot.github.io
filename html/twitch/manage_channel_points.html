@@ -14,51 +14,48 @@
         "imports": {
             "twitchChannelPoints": "../../js/twitch/channelPoints.js",
             "twitchUtils": "../../js/twitch/utils.js",
-            "twitchWebsocket": "../../js/twitch/websocket.js",
+            "twitchWebsocket": "../../js/twitch/websocket.js"
         }
     }
 </script>
 
 <!-- main script -->
-<script src="../../js/twitch/manageChannelPoints.js"></script>
+<script type="module" src="../../js/twitch/manageChannelPoints.js"></script>
 
 <link rel="stylesheet" href="/css/local_admin.css">
+<link rel="stylesheet" href="/css/manage_channel_points.css">
 <body>
     <div>
         <p>Instructions:</p>
         <ol>
-            <li>This component uses the `streamer` credentials in `js/secrets.js`</li>
-            <li>This requires the local server to manage files.  It will not work without the server.</li>
-            <li>Channel point rewards managed here will be stored in `managed/channelPoints.js`</li>
-            <li>If you ever delete your channel points from your managed folder, be sure to delete it from your <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards">Channel Points Dashboard</a>, and recreate it using this page.</li>
+            <li>This component uses the `streamer` credentials in `js/secrets.js` - it must authenticate as the user you stream as.</li>
+            <li>You can edit your channel points for the bot from this interface.  Errors will highlight relevant fields in red, and changed but valid fields will be yellow.</li>
+            <li>Channel point rewards managed here will be stored in `managed/channelPointRewards.js` - if you delete or break the file somehow, use the "Regenerate Channel Points File" button.</li>
+            <li>If you ever delete your channel points from Twitch, keep note of the data for existing rewards you do have, then use "Reset Channel Point Redemptions" to start from scratch.</li>
+            <li>Use the link for the provided reward to manage the reward on Twitch, ie. for setting up the icon.</li>
+            <li>DO NOT EDIT THE TITLE OF THE REWARD REMOTELY.  Everything else can be edited remotely, if needed.</li>
         </ol>
 
-        <div id="managedChannelPoints">
+        <div id="waitingWrapper">
+            <p>Waiting for Twitch...</p>
+            <div id="waitingLoader"></div>
+        </div>
+        <div id="managedChannelPointsOuterWrapper">
+        <div id="managedChannelPointsWrapper">
+            
+        </div>
+        </div>
+
+        <div id="buttonsWrapper" class="buttons">
+            <input id="submitPointsButton" type="button" value="Submit Channel Point Redemptions" disabled />
+            <input id="resetPointsButton" type="button" value="Reset Channel Point Redemptions" />
+            <input id="regenerateFileButton" type="button" value="Regenerate Channel Points File" disabled />
+        </div>
+        <div id="confirmButtonsWrapper" style="display: none;">
         </div>
 
         <div id="existingChannelPoints">
         </div>
-        
-        <form id="submitForm" autocomplete="off">
-            <p>Select which account to authenticate against:</p>
-            <!-- title: max 45 characters, have default value for it -->
-            <!-- cost: at least 1 -->
-            <!-- prompt: text shown to viewer for reward -->
-            <!-- is_enabled: set checked by default -->
-            <!-- background_color: use hex format, show color preview -->
-            <!-- max_per_stream: empty or 0 = do not set -->
-            <!-- max_per_user_per_stream: empty or 0 = do not set -->
-            <!-- global_cooldown_seconds: empty or 0 = do not set -->
-            <!-- should_redemptions_skip_request_queue: checkbox -->
-
-
-            <ul id="twitchAccountSelector" style="list-style-type: none;">
-            </ul>
-
-            <label for="twitchState">State:<input style="width: 300px;" type="text" id="twitchState" name="state" readonly="readonly" autocomplete="off" /></label>
-            
-            <input id="submitButton" type="submit" value="Begin Authentication" />
-        </form>
     </div>
 </body>
 </html> 

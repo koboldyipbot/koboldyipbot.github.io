@@ -1,3 +1,10 @@
+class TwitchError extends Error {
+  constructor(message, resp) {
+    super(message);
+    this.resp = resp;
+  }
+}
+
 export class TwitchUtils {
 
   // warning: changing the order of these characters in the list WILL affect rng generation of other modules.
@@ -71,6 +78,7 @@ export class TwitchUtils {
       await me.getTwitchAuthToken();
     }
     let resp = await async_fn(me.twitchAuthToken);
+    // window.insideResp = resp;
     if (resp.status == 401) {
       await me.getTwitchAuthToken();
       resp = await async_fn(me.twitchAuthToken);
@@ -97,6 +105,10 @@ export class TwitchUtils {
             'Client-Id': me.auth.clientID,
           } 
         });
+
+        if (!resp.ok) {
+          throw new TwitchError(`getTwitchUsers failed: ${resp.status} -- ${await resp.text()}`, resp);
+        }
 
         let output = await resp.json();
         // console.log(`getTwitchUsers output: ${JSON.stringify(output)}`);
@@ -159,6 +171,10 @@ export class TwitchUtils {
               } 
             });
 
+            if (!resp.ok) {
+              throw new TwitchError(`isUserMod failed: ${resp.status} -- ${await resp.text()}`, resp);
+            }
+
             let output = await resp.json();
             let replacementModUsers = new Set();
             for (let i in output.data) {
@@ -180,6 +196,124 @@ export class TwitchUtils {
     let userData = await me.getTwitchUsers([user]);
     return userData.data.length > 0;
   }
+
+  async doTwitchAPIBasicGET(url, urlSearchParams = null) {
+    let me = this;
+
+    return me.doTwitchAPIRequest(
+      async (twitchAuthToken) => {
+        if (urlSearchParams !== null) {
+          url = `${url}?${urlSearchParams.toString()}`;
+        }
+        
+        let resp = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${twitchAuthToken}`,
+            'Client-Id': me.auth.clientID,
+          }
+        });
+
+        if (!resp.ok) {
+          throw new TwitchError(`doTwitchAPIBasicGet failed: ${resp.status} -- ${await resp.text()}`, resp);
+        }
+
+        let output = await resp.json();
+        // console.log(`getTwitchUsers output: ${JSON.stringify(output)}`);
+        return output;
+      }
+    );
+  }
+
+  async doTwitchAPIBasicPOST(url, urlSearchParams = null, body = null) {
+    let me = this;
+
+    return me.doTwitchAPIRequest(
+      async (twitchAuthToken) => {
+        if (urlSearchParams !== null) {
+          url = `${url}?${urlSearchParams.toString()}`;
+        }
+
+        let resp = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${twitchAuthToken}`,
+            'Client-Id': me.auth.clientID,
+          },
+          body: body ? JSON.stringify(body) : null
+        });
+
+        if (!resp.ok) {
+          let text = await resp.text();
+          console.log(text);
+          throw new TwitchError(`doTwitchAPIBasicPOST failed: ${resp.status} -- ${text}`, resp);
+        }
+
+        let output = await resp.json();
+        // console.log(`getTwitchUsers output: ${JSON.stringify(output)}`);
+        return output;
+      }
+    );
+  }
+
+  async doTwitchAPIBasicPATCH(url, urlSearchParams = null, body = null) {
+    let me = this;
+
+    return me.doTwitchAPIRequest(
+      async (twitchAuthToken) => {
+        if (urlSearchParams !== null) {
+          url = `${url}?${urlSearchParams.toString()}`;
+        }
+        
+        let resp = await fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${twitchAuthToken}`,
+            'Client-Id': me.auth.clientID,
+          },
+          body: body ? JSON.stringify(body) : null
+        });
+
+        if (!resp.ok) {
+          throw new TwitchError(`doTwitchAPIBasicPATCH failed: ${resp.status} -- ${await resp.text()}`, resp);
+        }
+
+        let output = await resp.json();
+        // console.log(`getTwitchUsers output: ${JSON.stringify(output)}`);
+        return output;
+      }
+    );
+  }
+
+  async doTwitchAPIBasicDELETE(url, urlSearchParams = null) {
+    let me = this;
+
+    return me.doTwitchAPIRequest(
+      async (twitchAuthToken) => {
+        if (urlSearchParams !== null) {
+          url = `${url}?${urlSearchParams.toString()}`;
+        }
+        
+        let resp = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${twitchAuthToken}`,
+            'Client-Id': me.auth.clientID,
+          }
+        });
+
+        if (!resp.ok) {
+          throw new TwitchError(`doTwitchAPIBasicDELETE failed: ${resp.status} -- ${await resp.text()}`, resp);
+        }
+
+        return resp;
+      }
+    );
+  }
 }
 
 let utilsCache = {};
@@ -193,3 +327,5 @@ export function getTwitchUtils(auth) {
     return utils;
   }
 }
+
+window.getTwitchUtils = getTwitchUtils;

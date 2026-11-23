@@ -123,6 +123,7 @@ function onMessageHandler (channel, context, msg, self) {
       updateYips(user, -yips);
     }
   } else if (commandArr[0] === "!hello") {
+    console.log('hello!');
     var isMod = config.mods.includes(user);
     if (isMod && command.slice(7, 10) === "off") {
       state.helloEnabled = false;

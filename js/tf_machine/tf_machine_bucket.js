@@ -1,4 +1,4 @@
-import {TwitchChannelPoints} from 'twitchChannelPoints';
+import {DEFAULT_MANAGED_CHANNEL_POINT_REWARDS, TwitchChannelPoints} from 'twitchChannelPoints';
 import {TFMachineChat} from 'tfMachineChat';
 import {TFMachineQueue} from 'tfMachineQueue';
 import {getTwitchUtils} from 'twitchUtils';
@@ -25,6 +25,31 @@ const tfMachineAudioBump = new Audio('/sounds/tf_machine/cm_catgirlbump.wav');
 const tfMachineAudioFalling = new Audio('/sounds/tf_machine/cm_catgirlfallin.wav');
 
 var DEBUG_ITEM;
+
+let channelPoints = new TwitchChannelPoints('tf_machine', secrets.twitch.streamer);
+// Customize Avatar Reward
+channelPoints.registerFunction(
+  DEFAULT_MANAGED_CHANNEL_POINT_REWARDS.tf_machine[0].title,
+  (data) => {
+    let username = data.payload.event.user_name;
+    let code = data.payload.event.user_input;
+
+    if(!TFAvatar.isValidCode(code)) {
+      twitchChat.sendMessage('Avatar code invalid!  Must be 0-9, a-z, A-Z only.');
+      throw new Error('Invalid avatar code');
+    }
+
+    document.dispatchEvent(new TFAvatarChangeEvent(username, code));
+  }
+);
+// Drop Avatar Reward
+channelPoints.registerFunction(
+  DEFAULT_MANAGED_CHANNEL_POINT_REWARDS.tf_machine[1].title,
+  (data) => {
+    let username = data.payload.event.user_name;
+    tfMachineBucketQueue.enqueue(username);
+  }
+);
 
 
 // function tfMachineParse (isMod, commandArr, channel, context, msg, self) {

@@ -1,3 +1,6 @@
+import {ObjectPool} from 'objectPool';
+import {AudioPlayer} from 'audioPlayer'; // TODO: Build pitch shift + convert to using AudioPlayer
+
 var baseYip = new Audio("sounds/yip.mp3");
 var c4Yip = new Audio("sounds/yipc4.mp3");
 var c3Yip = new Audio("sounds/yip2.mp3");

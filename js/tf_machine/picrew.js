@@ -44,18 +44,14 @@ SVGUtils.initialize().then(() => {
   activeCharacter = new TFAvatar();
   window.activeCharacter = activeCharacter;
   window.character = activeCharacter;
-  console.log("tfed character created");
 
   let code = findGetParameter('code');
   let name = findGetParameter('name');
 
   let promise = null;
-  console.log(`name: ${name} -- code: ${code}`)
   if (name !== null && code === null) {
-    console.log('yay!')
     promise = activeCharacter.randomizeCharacter(name);
   } else {
-    console.log('huh?')
     promise = activeCharacter.interpretCode(code);
   }
 

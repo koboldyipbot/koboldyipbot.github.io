@@ -1,4 +1,5 @@
 import {TwitchWebsocketHelper} from 'twitchWebsocket';
+import {getTwitchUtils} from 'twitchUtils';
 // 1.  create your own app at https://dev.twitch.tv/console/apps/create -- use http://localhost for the OAuth Redirect URL
 // 2.  put your Client ID and secret into secrets.js
 // 3.  replace the client_id parameter in the following url with yours: https://id.twitch.tv/oauth2/authorize?client_id=YOUR_CLIENT_ID_HERE&force_verify=false&redirect_uri=http://localhost&scope=channel%3Aread%3Aredemptions+bits%3Aread&response_type=code
@@ -23,7 +24,6 @@ var twitchEventMessageHandlers = {};
 
 var twitchMessageIdCache = {};
 
-
 const twitchEventScopes = config.twitchAuthScopes.streamer.map(encodeURIComponent).join("+");
 
 const channelPointWebsocketEventSubscriptions = {
@@ -35,31 +35,255 @@ const channelPointWebsocketEventSubscriptions = {
   }
 };
 
-export class TwitchChannelPoints {
-  constructor(auth) {
-    this.websocketHelper = TwitchWebsocketHelper(
-      secrets.twitch.streamer,
-      config.twitchChannelPointConfig,
-      this.onOpenFunc,
-      this.onNotificationFunc
-    );
+export const DEFAULT_MANAGED_CHANNEL_POINT_REWARDS = {
+  tf_machine: [
+    {
+      title: "Customize TF Avatar",
+      cost: 1,
+      is_user_input_required: true,
+      prompt: "Enter the code from the Picrew!",
+      is_enabled: true,
+      background_color: "#FF00B5"
+    },
+    {
+      title: "Drop TF Avatar",
+      cost: 100000,
+      is_enabled: false,
+      background_color: "#FF00B5"
+    }
+  ]
+};
 
-    this.websocketHelper.rebuildWebsocket();
+export class TwitchChannelPoints {
+  constructor(plugin, auth) {
+    this.plugin = plugin;
+    let websocketConfig = {
+      name: "TwitchChannelPoints",
+      websocketURL: config.websocketConfig.defaultWebsocketURL,
+      keepalive_timeout_seconds: 600,
+      websocketEventSubscriptions: channelPointWebsocketEventSubscriptions
+    };
+    this.websocketHelper = new TwitchWebsocketHelper(auth, websocketConfig, this);
+    this.twitchUtils = getTwitchUtils(auth);
+    this.registeredFunctions = {};
+  }
+
+  async connect() {
+    return await this.websocketHelper.rebuildWebsocket();
   }
 
   async onOpenFunc(e) {
     console.log("Channel points websocket opened!");
   }
 
+  /**
+   * Invokes a function against the Reward ID, if registered.
+   * Passes the full data from the invocation of the WebSocket event.
+   * data format:
+   * - metadata
+   *   - message_id
+   *   - message_timestamp
+   *   - message_type
+   *   - subscription_type
+   *   - subscription_version
+   * - payload
+   *   - event
+   *     - broadcaster_user_id
+   *     - broadcaster_user_login
+   *     - broadercaster_user_name
+   *     - id
+   *     - redeemed_at
+   *     - reward
+   *       - cost
+   *       - id
+   *       - prompt
+   *       - title
+   *     - status
+   *     - user_id
+   *     - user_input (for redemptions with prompts)
+   *     - user_login
+   *     - user_name
+   */
   async onNotificationFunc(data) {
-    console.log(data);
     let subscriptionType = data.metadata.subscription_type;
     if (subscriptionType === "channel.channel_points_custom_reward_redemption.add") {
-      console.log("yay");
+      let rewardId = data.payload.event.reward.id;
+      let eventId = data.payload.event.id;
+      if (!(rewardId in this.registeredFunctions)) {
+        console.log(`Error redeeming channel point reward: Reward ID ${rewardId} is not registered to a function.`);
+        return;
+      }
+
+      try {
+        this.registeredFunctions[rewardId](data);
+        this.markRewardFulfilled(rewardId, eventId);
+      } catch (error) {
+        this.markRewardCanceled(rewardId, eventId);
+      }
     }
   }
 
+  /**
+   * Registers the function to the default name of the channel point reward.
+   */
+  async registerFunction(defaultRewardTitle, fn) {
+    let rewardMap = await TwitchChannelPoints.getLocalRewardMap();
+    let pluginMap = rewardMap[this.plugin];
+    let rewardId = pluginMap[defaultRewardTitle];
+    if (!rewardId) {
+      throw new Error(`No reward ID mapped to default reward: ${defaultRewardTitle}`);
+    }
+    this.registeredFunctions[rewardId] = fn;
+  }
+
+  /**
+   * Params details: https://dev.twitch.tv/docs/api/reference/#create-custom-rewards
+   */
+  static async upsertReward(
+    twitchUtils,
+    id = null,
+    title,
+    cost,
+    prompt = null,
+    is_enabled = true,
+    background_color = null,
+    is_user_input_required = false,
+    is_max_per_stream_enabled = false,
+    max_per_stream = null,
+    is_max_per_user_per_stream_enabled = false,
+    max_per_user_per_stream = null,
+    is_global_cooldown_enabled = false,
+    global_cooldown_seconds = null,
+    should_redemptions_skip_request_queue = false,
+    is_paused = false
+  ) {
+    let rewardParams = new URLSearchParams();
+    rewardParams.append('broadcaster_id', twitchUtils.auth.channelID);
+
+    let body = {
+      title: title,
+      cost: cost
+    }
+
+    body.is_user_input_required = is_user_input_required;
+    if (prompt !== null) {
+      body.prompt = prompt;
+    }
+
+    if (!is_enabled) {
+      body.is_enabled = false;
+    }
+
+    if (background_color !== null) {
+      body.background_color = background_color;
+    }
+
+    body.is_max_per_stream_enabled = is_max_per_stream_enabled;
+    if (max_per_stream !== null) {
+      body.max_per_stream = max_per_stream; 
+    }
+
+    body.is_max_per_user_per_stream_enabled = is_max_per_user_per_stream_enabled;
+    if (max_per_user_per_stream !== null) {
+      body.max_per_user_per_stream = max_per_user_per_stream;
+    }
+
+    body.is_global_cooldown_enabled = is_global_cooldown_enabled;
+    if (global_cooldown_seconds !== null) {
+      body.global_cooldown_seconds = global_cooldown_seconds;
+    }
+
+    body.should_redemptions_skip_request_queue = should_redemptions_skip_request_queue;
+
+    if (id !== null && is_paused) {
+      body.is_paused = is_paused;
+    }
+
+    if (id !== null) {
+      rewardParams.append('id', id);
+      return await twitchUtils.doTwitchAPIBasicPATCH(
+        'https://api.twitch.tv/helix/channel_points/custom_rewards', rewardParams, body
+      );
+    } else {
+      return await twitchUtils.doTwitchAPIBasicPOST(
+        'https://api.twitch.tv/helix/channel_points/custom_rewards', rewardParams, body
+      );
+    }
+  }
+
+  /**
+   * API-specific method for getting Twitch Rewards, which does *not* guarantee sorted order.
+   * Only use this if you're not managing channel points via manage_channel_points.html
+   */
+  static async getRewardsAPI(twitchUtils, appManagedRewardsOnly = true) {
+    let urlParams = new URLSearchParams();
+    urlParams.append('broadcaster_id', twitchUtils.auth.channelID);
+    urlParams.append('only_manageable_rewards', appManagedRewardsOnly);
+
+    return await twitchUtils.doTwitchAPIBasicGET(
+      'https://api.twitch.tv/helix/channel_points/custom_rewards', urlParams
+    );
+  }
+
+  /**
+   *  Returns rewards mapped by ID, default title, and the title stored on Twitch's servers.
+   */
+  static async getRewards(twitchUtils) {
+    let baseRewards = await TwitchChannelPoints.getRewardsAPI(twitchUtils, true);
+    let rewardMap = await TwitchChannelPoints.getLocalRewardMap();
+
+    let retMap = {
+      id: {},
+      defaultName: {},
+      remoteName: {}
+    };
+    for (let i = 0; i < baseRewards.data.length; i++) {
+      let reward = baseRewards.data[i];
+      retMap.id[reward.id] = reward;
+      retMap.defaultName[reward.id] = reward;
+    }
+  }
+
+  static async deleteReward(twitchUtils, rewardID) {
+    let urlParams = new URLSearchParams();
+    urlParams.append('broadcaster_id', twitchUtils.auth.channelID);
+    urlParams.append('id', rewardID);
+
+    return await twitchUtils.doTwitchAPIBasicDELETE(
+      'https://api.twitch.tv/helix/channel_points/custom_rewards', urlParams
+    );
+  }
+
+  static async getLocalRewardMap() {
+    let resp = await fetch(`${window.location.origin}/managed/channelPoints.json`, {method: 'GET'});
+    return await resp.json();
+  }
+
+  async markRewardFulfilled(rewardId, eventId) {
+    return await this.updateRedemptionStatus(rewardId, eventId, 'FULFILLED');
+  }
+
+  async markRewardCanceled(rewardId, eventId) {
+    return await this.updateRedemptionStatus(rewardId, eventId, 'CANCELED');
+  }
+
+  async updateRedemptionStatus(rewardId, eventId, status) {
+    if (status !== 'CANCELED' && status !== 'FULFILLED') {
+      console.error(`updateRedemptionStatus: Invalid status ${status}`);
+      return;
+    }
+
+    let urlParams = new URLSearchParams();
+    urlParams.append('id', eventId);
+    urlParams.append('broadcaster_id', this.twitchUtils.auth.channelID);
+    urlParams.append('reward_id', rewardId);
+    await this.twitchUtils.doTwitchAPIBasicPATCH(
+      'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions', urlParams, {status: status}
+    );
+  }
 }
+
+window.TwitchChannelPoints = TwitchChannelPoints;
 
 // https://id.twitch.tv/oauth2/authorize?client_id=34njj6we18nbb8ml4si3q8ux7eqa6m&force_verify=false&redirect_uri=http://localhost&scope=channel%3Aread%3Aredemptions+bits%3Aread&response_type=code
 

@@ -30,6 +30,14 @@ const config = {
         defaultWebsocketURL: "wss://eventsub.wss.twitch.tv/ws",
         pingTimeout: 2 * 60 * 1000 // 2 minutes
     },
+    twitchChannelPointWebsocketConfig: {
+        name: "Channel Points",
+        websocketURL: "wss://eventsub.wss.twitch.tv/ws",
+        keepalive_timeout_seconds: 600,
+        websocketEventSubscriptions: [
+            "channel.channel_points_custom_reward_redemption.add"
+        ]
+    },
     enabledModules: {
         warframe: {
             relics: true

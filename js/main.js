@@ -1,5 +1,6 @@
 import {TwitchUtils} from './twitch/utils.js';
 import {TwitchChat} from 'twitchChat';
+import {AudioPlayer} from 'audioPlayer';
 
 export class MainChat extends TwitchChat {
   constructor () {
@@ -130,11 +131,11 @@ function doHelp(channel, context) {
 }
 
 function hello() {
-  var audio = new Audio('sounds/hello.mp3');
-  audio.loop = false;
-  audio.volume = .6;
-  audio.play();
+  let audioPlayer = new AudioPlayer('sounds/Hello.mp3');
+  audioPlayer.play({volume: .6});
 }
+
+window.hello = hello;
 
 // Called every time a message comes in
 // function onMessageHandler (channel, context, msg, self) {
@@ -268,11 +269,13 @@ function onMessageHandler(event) {
       updateYips(username, -yips);
     }
   } else if (cmd1 === "!hello") {
+    
     if (isMod && command.slice(7, 10) === "off") {
       state.helloEnabled = false;
     } else if (isMod && command.slice(7, 10) === "on") {
       state.helloEnabled = true;
     } else if (state.helloEnabled || isMod) {
+      console.log('hello2!');
       hello();
     }
   // } else if (cmd1 === "!rpg") {
@@ -395,7 +398,7 @@ function onMessageHandler(event) {
 // }
 
 function charityChat() {
-  twitchChat.sendMessage("Today's charity: The Portland Sisters of Perpetual Indugence! https://portlandsisters.org/donate/");
+  // twitchChat.sendMessage("Today's charity: The Portland Sisters of Perpetual Indugence! https://portlandsisters.org/donate/");
   setTimeout(charityChat, 15 * 60 * 1000);
 }
 

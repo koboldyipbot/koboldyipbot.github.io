@@ -1,6 +1,6 @@
 const TWITCH_TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
 
-window.onload = (event) => {
+window.addEventListener('load', (event) => {
 	let twitchStateText = document.getElementById("twitchState");
 	twitchStateText.focus();
 	twitchStateText.addEventListener('keyup', ({key}) => {
@@ -8,7 +8,7 @@ window.onload = (event) => {
 			validateState();
 		}
 	});
-};
+});
 
 function validateState() {
   // TODO: validate that authenticated user matches configured user

@@ -89,7 +89,8 @@ export class TwitchWebsocketHelper {
             'session_id': me.websocketSessionID
           }
         });
-        let resp = await fetch(`https://api.twitch.tv/helix/eventsub/subscriptions`, {
+        console.log(body);
+        let resp = await fetch('https://api.twitch.tv/helix/eventsub/subscriptions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

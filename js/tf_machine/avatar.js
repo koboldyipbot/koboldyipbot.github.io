@@ -4,6 +4,25 @@ import {saveCode, loadCode} from 'userConfig';
 import {BASE_SVGS, drawSVGOnCanvas, getPart, getRandomPart} from 'svgUtils';
 import {TwitchUtils} from 'twitchUtils';
 
+
+export class TFAvatarChangeEvent extends CustomEvent {
+  static EVENT_NAME = 'tfavatarchange';
+
+  static buildEventName(username) {
+    return `${TFAvatarChangeEvent.EVENT_NAME}_${username}`;
+  }
+
+  constructor(username, code) {
+    super(
+      TFAvatarChangeEvent.buildEventName(username), 
+      {
+        detail: {
+          code:code
+        }
+      }
+    );
+  }
+}
 /**
  * Usage: Instantiate, then either run interpretCode or randomizeCharacter, then renderTFed.
  * 
@@ -33,10 +52,29 @@ export class TFAvatar {
     this.blinkingStarted = false;
     this.matterSprite = null;
     this.ceased = false; // set to true to stop all animations and related functions managed in this code
+
+    // Setup event listener for code changes
+    let me = this;
+    me.eventListenerFunction = (e) => {
+      let code = e.detail.code;
+
+      me.interpretCode(code).then(() => {
+        me.renderTFed();
+      });
+    }
+    document.addEventListener(
+      TFAvatarChangeEvent.buildEventName(username),
+      me.eventListenerFunction
+    )
   }
 
   cease() {
-    this.ceased = true;
+    let me = this;
+    me.ceased = true;
+    document.removeEventListener(
+      TFAvatarChangeEvent.buildEventName(me.username),
+      me.eventListenerFunction
+    );
   }
 
   // should only ever be set by interpretCode
@@ -80,7 +118,7 @@ export class TFAvatar {
     }
 
     // reject if there are invalid characters
-    if (code.match(TFMachineUtils.INVALID_CHARACTER_REGEX)) {
+    if (!TFAvatar.isValidCode(code)) {
       throw new Error(`"${code}" contains invalid regex - valid characters are numbers or letters only.`);
     } 
 
@@ -148,6 +186,11 @@ export class TFAvatar {
         that.parts[category] = {fileNumber: safePartFileNumber, color: color}; // `${category}${fileNumber}`; // `images/tf_machine/catgirls/${fileCode}/${category}.png`;
       }
     }
+  }
+
+  static isValidCode(code) {
+    console.log(code);
+    return !code.match(TFMachineUtils.INVALID_CHARACTER_REGEX);
   }
 
   async changePart(category, partFileNumber, color) {

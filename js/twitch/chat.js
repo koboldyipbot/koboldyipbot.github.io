@@ -59,6 +59,7 @@ export class TwitchChat {
   }
 
   async onOpenFunc(e) {
+    console.log('Chat connected!');
     // this.sendMessage("main screen turn on");
   }
 

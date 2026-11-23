@@ -11,7 +11,7 @@ class ObjectPoolMember {
   }
 }
 
-class ObjectPool {
+export class ObjectPool {
   poolArray = []
   freeElements = 0
   nextFree = null
@@ -21,7 +21,7 @@ class ObjectPool {
   constructor(
     constructorFunction,
     resetFunction = (obj) => obj,
-    initialSize = 1000,
+    initialSize = 100,
   ) {
     this.resetFunction = resetFunction
     this.constructorFunction = constructorFunction

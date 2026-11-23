@@ -1,9 +1,10 @@
-import {TwitchChannelPoints} from 'twitchChannelPoints';
+import {ObjectPool} from 'objectPool';
+import {DEFAULT_MANAGED_CHANNEL_POINT_REWARDS, TwitchChannelPoints} from 'twitchChannelPoints';
 import {TFMachineChat} from 'tfMachineChat';
 import {TFMachineQueue} from 'tfMachineQueue';
 import {getTwitchUtils} from 'twitchUtils';
 import {playAudio} from 'tfMachineUtils';
-import {TFAvatar} from 'tfMachineAvatar';
+import {TFAvatarChangeEvent, TFAvatar} from 'tfMachineAvatar';
 import {initialize as SVGUtilsInitialize} from 'svgUtils';
 
 const twitchUtils = getTwitchUtils(secrets.twitch.chatBot);
@@ -22,6 +23,35 @@ const tfMachineQueue = new TFMachineQueue(
 const twitchChat = new TFMachineChat(tfMachineQueue);
 window.twitchChat = twitchChat;
 
+let channelPoints = new TwitchChannelPoints('tf_machine', secrets.twitch.streamer);
+// Customize Avatar Reward
+channelPoints.registerFunction(
+  DEFAULT_MANAGED_CHANNEL_POINT_REWARDS.tf_machine[0].title,
+  (data) => {
+    console.log(`firing ${DEFAULT_MANAGED_CHANNEL_POINT_REWARDS.tf_machine[0].title}!`);
+    console.log(data);
+    let username = data.payload.event.user_name;
+    let code = data.payload.event.user_input;
+
+    if(!TFAvatar.isValidCode(code)) {
+      twitchChat.sendMessage('Avatar code invalid!  Must be 0-9, a-z, A-Z only.');
+      throw new Error('Invalid avatar code');
+    }
+
+    document.dispatchEvent(new TFAvatarChangeEvent(username, code));
+  }
+);
+// Drop Avatar Reward
+channelPoints.registerFunction(
+  DEFAULT_MANAGED_CHANNEL_POINT_REWARDS.tf_machine[1].title,
+  (data) => {
+    console.log(`firing ${DEFAULT_MANAGED_CHANNEL_POINT_REWARDS.tf_machine[1].title}!`);
+    console.log(data);
+    let username = data.payload.event.user_name;
+    tfMachineQueue.enqueue(username);
+  }
+);
+
 
 // function tfMachineParse (isMod, commandArr, channel, context, msg, self) {
 //  console.log('made it');
@@ -39,8 +69,7 @@ window.twitchChat = twitchChat;
 // function onConnectedHandler (addr, port) {
   // console.log(`* Connected to ${addr}:${port}`);
 
-
-window.onload = (event) => {
+window.addEventListener('load', (event) => {
   // preload images
   preloadImage(tfMachineImgEmpty);
   preloadImage(tfMachineImgDoorClose);
@@ -58,11 +87,13 @@ window.onload = (event) => {
 
   SVGUtilsInitialize().then(() => {
     tfMachineQueue.enabled = true;
-  })
+  });
 
   // initialize chat
+  console.log('initializing');
   twitchChat.connect();
-}
+  channelPoints.connect();
+});
 
 
 // images

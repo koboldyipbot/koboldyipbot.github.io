@@ -1,6 +1,6 @@
 const TWITCH_BASE_AUTH_URL = 'https://id.twitch.tv/oauth2/authorize';
 
-window.onload = (event) => {
+window.addEventListener('load', (event) => {
   // Prep Account Entries from secrets
   let accountSelector = document.getElementById('twitchAccountSelector');
   let first = true;
@@ -48,7 +48,7 @@ window.onload = (event) => {
   	navigator.clipboard.writeText(stateBox.value);
   	beginAuthentication(e.target);
   });
-};
+});
 
 function beginAuthentication(formData) {
 	console.log(formData.accountType);
