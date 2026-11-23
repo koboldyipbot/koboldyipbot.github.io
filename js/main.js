@@ -1,6 +1,35 @@
 import {TwitchUtils} from './twitch/utils.js';
 import {TwitchChat} from 'twitchChat';
 import {AudioPlayer} from 'audioPlayer';
+import {TwitchChannelPoints} from 'twitchChannelPoints';
+import {registerChannelPoints, fetchUserYips, updateYips, detokenizeYipSong, playSong, yip} from 'yip';
+
+let channelPoints = new TwitchChannelPoints('tf_machine', secrets.twitch.streamer);
+window.channelPoints = channelPoints;
+registerChannelPoints(channelPoints);
+
+// Customize Avatar Reward
+
+// channelPoints.registerFunctionById(
+//   ,
+//   (data) => {
+//     console.log(`firing ${DEFAULT_MANAGED_CHANNEL_POINT_REWARDS.tf_machine[0].title}!`);
+//     console.log(data);
+//     let username = data.payload.event.user_name;
+//     let code = data.payload.event.user_input;
+
+//     if(!TFAvatar.isValidCode(code)) {
+//       twitchChat.sendMessage('Avatar code invalid!  Must be 0-9, a-z, A-Z only.');
+//       throw new Error('Invalid avatar code');
+//     }
+
+//     document.dispatchEvent(new TFAvatarChangeEvent(username, code));
+//   }
+// );
+
+channelPoints.connect();
+
+
 
 export class MainChat extends TwitchChat {
   constructor () {
@@ -33,7 +62,7 @@ export class MainChat extends TwitchChat {
   }
 
   async onOpenFunc(e) {
-    setTimeout(charityChat, 15 * 60 * 1000);
+    // setTimeout(charityChat, 15 * 60 * 1000);
   }
 
   async handleChatNotification(event) {

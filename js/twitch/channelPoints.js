@@ -136,6 +136,10 @@ export class TwitchChannelPoints {
     this.registeredFunctions[rewardId] = fn;
   }
 
+  async registerFunctionById(rewardId, fn) {
+    this.registeredFunctions[rewardId] = fn;
+  }
+
   /**
    * Params details: https://dev.twitch.tv/docs/api/reference/#create-custom-rewards
    */

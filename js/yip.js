@@ -1,6 +1,53 @@
 import {ObjectPool} from 'objectPool';
 import {AudioPlayer} from 'audioPlayer'; // TODO: Build pitch shift + convert to using AudioPlayer
 
+export function registerChannelPoints(channelPoints) {
+  channelPoints.registerFunctionById(
+    '01567137-cc69-4afa-b8d1-227184b548d2',
+    angelYip
+  );
+  channelPoints.registerFunctionById(
+    '071d2b19-a8c1-4d2c-9546-e245950220a5',
+    songOfStormsYip
+  );
+  channelPoints.registerFunctionById(
+    '0e8d86c7-dfb9-461c-a6cc-f570733ff5bd',
+    blindedYip
+  );
+  channelPoints.registerFunctionById(
+    '48d4f91f-6eea-47c3-a2ec-40bdd2f787fd',
+    yipShanty2Yip
+  );
+  channelPoints.registerFunctionById(
+    '668bbdba-77cb-4a60-ba33-41aa39ff5ba1',
+    marioYip
+  );
+  channelPoints.registerFunctionById(
+    '75e2696f-70c7-4f7b-96ea-01f299da4746',
+    chargeYip
+  );
+  channelPoints.registerFunctionById(
+    '7ee7a094-4ae2-4dc8-9819-5fab5d33e2f5',
+    sandstormYip
+  );
+  channelPoints.registerFunctionById(
+    '9b250ae9-2bed-489e-a478-0d215bb6a52a',
+    yaketyYip
+  );
+  channelPoints.registerFunctionById(
+    'da2dd1d3-498f-4c9e-8760-461046f6308e',
+    koboldTownYip
+  );
+  channelPoints.registerFunctionById(
+    'ef1eab01-6a47-4253-a099-353dcbe1ea1e',
+    girlInTheTowerYip
+  );
+  channelPoints.registerFunctionById(
+    'f8ab5c57-65bc-425f-8150-82a71fcd20a2',
+    sansYip
+  );
+}
+
 var baseYip = new Audio("sounds/yip.mp3");
 var c4Yip = new Audio("sounds/yipc4.mp3");
 var c3Yip = new Audio("sounds/yip2.mp3");
@@ -68,7 +115,7 @@ var yipC4AudioPool = new ObjectPool(createC4YipAudio, resetYipAudio);
 var yipC3AudioPool = new ObjectPool(createC3YipAudio, resetYipAudio);
 // var yipImgPool = new ObjectPool(createYipImg, resetYipImage);
 
-function fetchUserYips(user) {
+export function fetchUserYips(user) {
   if (!(user in state.userYips)) {
     let userData = localStorage.getItem(user);
     let yips = 0;
@@ -93,7 +140,7 @@ function fetchUserYips(user) {
   return state.userYips[user];
 }
 
-function updateYips(user, yipChange) {
+export function updateYips(user, yipChange) {
   var userYips = fetchUserYips(user);
   yipChange = yipChange || 0;
   if (config.mods.includes(user)) {
@@ -248,7 +295,7 @@ function blindedYip() {
     ]);
 }
 
-function angelYip() {
+export function angelYip() {
     // https://musescore.com/asiatomax/a-cruel-angel-s-thesis-difficulty-3-5
 
     /* 80 bpm, 3000 ms per bar */
@@ -515,7 +562,7 @@ function songOfStormsYip() {
 }
 
 
-function detokenizeYipSong(song) {
+export function detokenizeYipSong(song) {
     // return null if invalid song
   var splitted = song.replaceAll('[', '[ ').replaceAll(']', ' ]').replaceAll(",", "").split(/\s+/);
   var song = [];
@@ -607,7 +654,7 @@ function setupSongAudio(midiPitch) {
   return a;
 }
 
-function playSong(song, forceSong, finishFunc) {
+export function playSong(song, forceSong, finishFunc) {
   if (forceSong === undefined && state.isSinging) {
     console.log(":(")
         // var val = $("#debugdiv").val();
@@ -730,7 +777,7 @@ function hiding_animate_yip() {
   var spanElement = yipSpanPool.getElement();
   var span = spanElement.data;
   $("#yip_box").append(span);
-  last_anim = span;
+  let last_anim = span;
 
   var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
   var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -787,7 +834,7 @@ function static_animate_yip() {
   var spanElement = yipSpanPool.getElement();
   var span = spanElement.data;
   $("#yip_box").append(span);
-  last_anim = span;
+  let last_anim = span;
 
   var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
   var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -840,7 +887,7 @@ function static_animate_yip() {
   }
 }
 
-function yip(yipCount, msPerYip) {
+export function yip(yipCount, msPerYip) {
   var midiPitch = 56 + Math.random()*12;
   var audio = setupBaseYipAudio(midiPitch);
   audio.play();

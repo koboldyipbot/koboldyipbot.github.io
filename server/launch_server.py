@@ -5,12 +5,14 @@ from http import HTTPStatus
 import sys
 import logging
 import json
+import pathlib
 
 import channel_points_handler
 
 class CORSRequestHandler (SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory='../', **kwargs)
+        parent_dir = pathlib.Path(__file__).resolve().parent.parent
+        super().__init__(*args, directory=parent_dir, **kwargs)
         self.extensions_map['.json'] = 'application/json'
 
     def end_headers (self):
